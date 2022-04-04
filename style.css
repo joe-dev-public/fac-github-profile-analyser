@@ -1,0 +1,10 @@
+* {
+    box-sizing: border-box;
+    font-family: "Open Sans", "Arial", sans-serif;
+    line-height: 1.5;
+}
+
+#everything {
+    margin: 0 auto;
+    max-width: 42rem;
+}
