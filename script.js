@@ -14,8 +14,18 @@ function drawChart(myDataObj) {
         labels: myLabels,
         datasets: [
             {
-                /* label: '"Stick" strategy', */
-                /* backgroundColor: 'rgb(255, 128, 0)', */
+                /* label: 'Testing', */
+                // Chart.js won't provide colours, so make a nice set/function to generate.
+                backgroundColor: [
+                'rgb(255, 0, 0)',
+                'rgb(0, 255, 0)',
+                'rgb(0, 0, 255)',
+                'rgb(255, 255, 0)',
+                'rgb(0, 255, 255)',
+                'rgb(255, 0, 255)',
+                //'rgb(255, 255, 255)',
+                //'rgb(0, 0, 0)',
+                ],
                 data: myData,
             },
         ]
@@ -26,7 +36,24 @@ function drawChart(myDataObj) {
         data: data,
         options: {
             // Get rid of mouse hover stuff:
-            //events: [],
+            events: [],
+            plugins: {
+                legend: {
+                    labels: {
+                        // https://stackoverflow.com/questions/39454586/pie-chart-legend-chart-js
+                        // --> https://jsfiddle.net/6bexkyd9/
+                        // https://www.chartjs.org/docs/latest/samples/other-charts/multi-series-pie.html
+                        //generateLabels: function(chart) {
+
+                        //},
+                        font: {
+                            size: 16,
+                        },
+                    },
+                    // Make this viewport-dependent?
+                    position: 'right',
+                },
+            },
 /*             scales: {
                 x: {
                     title: {
@@ -45,7 +72,7 @@ function drawChart(myDataObj) {
     };
 
     // Make the text a bit bigger:
-    Chart.defaults.font.size = 16;
+    //Chart.defaults.font.size = 16;
 
     if (myChart) {
         // If chart already exists, destroy it before creating a new one:
@@ -76,6 +103,20 @@ function drawChart2(myDataObj) {
         datasets: [
             {
                 data: myData,
+                backgroundColor: [
+                'rgb(255, 0, 0)',
+                'rgb(0, 255, 0)',
+                'rgb(0, 0, 255)',
+                'rgb(255, 255, 0)',
+                'rgb(0, 255, 255)',
+                'rgb(255, 0, 255)',
+                'rgb(127, 0, 0)',
+                'rgb(0, 127, 0)',
+                'rgb(0, 0, 127)',
+                'rgb(127, 127, 0)',
+                'rgb(0, 127, 127)',
+                'rgb(127, 0, 127)',
+                ],
             },
         ]
     };
@@ -84,11 +125,22 @@ function drawChart2(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            events: [],
+            plugins: {
+                legend: {
+                    /* labels: {
+                        font: {
+                            size: 16,
+                        },
+                    }, */
+                    position: 'right',
+                },
+            },
         },
     };
 
     // Make the text a bit bigger:
-    Chart.defaults.font.size = 16;
+    //Chart.defaults.font.size = 16;
 
     if (myChart2) {
         // If chart already exists, destroy it before creating a new one:
