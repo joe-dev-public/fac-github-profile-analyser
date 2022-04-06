@@ -61,7 +61,51 @@ function drawChart(myDataObj) {
 
 
 
+function drawChart2(myDataObj) {
+
+    const myLabels = [];
+    const myData = [];
+
+    for (const [key, value] of Object.entries(myDataObj)) {
+        myLabels.push(value['name']);
+        myData.push(value['count']);
+    }
+
+    const data = {
+        labels: myLabels,
+        datasets: [
+            {
+                data: myData,
+            },
+        ]
+    };
+
+    const config = {
+        type: 'pie',
+        data: data,
+        options: {
+        },
+    };
+
+    // Make the text a bit bigger:
+    Chart.defaults.font.size = 16;
+
+    if (myChart2) {
+        // If chart already exists, destroy it before creating a new one:
+        myChart2.destroy();
+    } 
+
+    myChart2 = new Chart(
+        document.getElementById('chart2'),
+        config
+    );
+
+} // End of function drawChart2
+
+
+
 let myChart = undefined;
+let myChart2 = undefined;
 
 const resultsEl = document.querySelector('#results');
 
@@ -159,13 +203,15 @@ ${response['login']}
                     const countPullRequestEventRefTypes = {};
                     const countIssuesEventRefTypes = {};
 
+                    const countRepoEvents = {};
+
                     response.forEach((element) => {
 
                         const type = element['type'];
 
                         // Count different types of event:
                         if (countEventTypes[type] === undefined) {
-                            countEventTypes[type] = 0;
+                            countEventTypes[type] = 1;
                         } else {
                             countEventTypes[type]++;
                         }
@@ -174,7 +220,7 @@ ${response['login']}
                         if (type === 'CreateEvent') {
                             const refType = element['payload']['ref_type'];
                             if (countCreateEventRefTypes[refType] === undefined) {
-                                countCreateEventRefTypes[refType] = 0;
+                                countCreateEventRefTypes[refType] = 1;
                             } else {
                                 countCreateEventRefTypes[refType]++;
                             }
@@ -184,7 +230,7 @@ ${response['login']}
                         if (type === 'PullRequestEvent') {
                             const action = element['payload']['action'];
                             if (countPullRequestEventRefTypes[action] === undefined) {
-                                countPullRequestEventRefTypes[action] = 0;
+                                countPullRequestEventRefTypes[action] = 1;
                             } else {
                                 countPullRequestEventRefTypes[action]++;
                             }
@@ -194,10 +240,29 @@ ${response['login']}
                         if (type === 'IssuesEvent') {
                             const action = element['payload']['action'];
                             if (countIssuesEventRefTypes[action] === undefined) {
-                                countIssuesEventRefTypes[action] = 0;
+                                countIssuesEventRefTypes[action] = 1;
                             } else {
                                 countIssuesEventRefTypes[action]++;
                             }
+                        }
+
+
+                    /*  Most popular repos: can calculate this from events above.
+                        "Figure out what their most popular repositories are" is ambiguous.
+                        Let's start by counting any interaction(s) with a repo.
+                    */
+
+                        const repoId = element['repo']['id'];
+                        // Not sure if name is unique
+                        const repoName = element['repo']['name'];
+
+                        if (countRepoEvents[repoId] === undefined) {
+                            countRepoEvents[repoId] = {
+                                'name': repoName,
+                                'count': 1,
+                            };
+                        } else {
+                            countRepoEvents[repoId]['count']++;
                         }
 
                     });
@@ -208,14 +273,12 @@ ${response['login']}
                     console.log(countPullRequestEventRefTypes);
                     console.log(countIssuesEventRefTypes);
 
+                    console.log(countRepoEvents);
+
                     drawChart(countEventTypes);
+                    drawChart2(countRepoEvents);
 
                 });
-
-
-            /*  Most popular repos: can calculate this from events above.
-            */
-
 
         })
         .catch((reason) => {
