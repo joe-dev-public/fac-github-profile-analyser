@@ -139,11 +139,7 @@ function drawChart2(myDataObj) {
         },
     };
 
-    // Make the text a bit bigger:
-    //Chart.defaults.font.size = 16;
-
     if (myChart2) {
-        // If chart already exists, destroy it before creating a new one:
         myChart2.destroy();
     } 
 
@@ -156,8 +152,90 @@ function drawChart2(myDataObj) {
 
 
 
+function drawChart3(myDataObj, username) {
+
+    const myLabels = [];
+    const myData = [];
+
+    /*  We want to draw a chart to show the most frequent (recent) collaborators.
+        So we can use the same data as before, but we'll need to count its contents differently.
+
+        No guarantees and this might not be the best approach, but events we count seem to
+        have the format "user/repo", so we could just count the number of unique users
+        (and make sure to ignore the user we've searched for?).
+    */
+
+    for (const [_, value] of Object.entries(myDataObj)) {
+        const eventUsername = value['name'].split('/')[0];
+        //if (eventUsername !== username) {
+            // We might need to use another object to count how many times a single user appears,
+            // regardless of repo.
+            //if 
+                myLabels.push(eventUsername);
+                myData.push(value['count']);
+        //}
+    }
+
+    console.log(myLabels);
+
+    const data = {
+        labels: myLabels,
+        datasets: [
+            {
+                data: myData,
+                backgroundColor: [
+                'rgb(255, 0, 0)',
+                'rgb(0, 255, 0)',
+                'rgb(0, 0, 255)',
+                'rgb(255, 255, 0)',
+                'rgb(0, 255, 255)',
+                'rgb(255, 0, 255)',
+                'rgb(127, 0, 0)',
+                'rgb(0, 127, 0)',
+                'rgb(0, 0, 127)',
+                'rgb(127, 127, 0)',
+                'rgb(0, 127, 127)',
+                'rgb(127, 0, 127)',
+                ],
+            },
+        ]
+    };
+
+    const config = {
+        type: 'pie',
+        data: data,
+        options: {
+            events: [],
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 16,
+                        },
+                    },
+                    position: 'right',
+                },
+            },
+        },
+    };
+
+    if (myChart3) {
+        // If chart already exists, destroy it before creating a new one:
+        myChart3.destroy();
+    } 
+
+    myChart3 = new Chart(
+        document.getElementById('chart3'),
+        config
+    );
+
+} // End of function drawChart3
+
+
+
 let myChart = undefined;
 let myChart2 = undefined;
+let myChart3 = undefined;
 
 const resultsEl = document.querySelector('#results');
 
@@ -182,7 +260,7 @@ formEl.addEventListener('submit', (event) => {
             }
         })
         .then((response) => {
-            console.log(response);
+            //console.log(response);
 
             const id = response['id'];
 
@@ -203,7 +281,7 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    console.log(response);
+                    //console.log(response);
                     // An array of starred projects (length zero if none)
                     if (response.length === 0) {
                         resultsEl.innerHTML += '<p>None</p>';
@@ -230,7 +308,7 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    console.log(response);
+                    //console.log(response);
                     /*
                         An array of event objects. Some examples of "type":
 
@@ -320,15 +398,16 @@ ${response['login']}
                     });
                     // End of response.forEach
 
-                    console.log(countEventTypes);
-                    console.log(countCreateEventRefTypes);
-                    console.log(countPullRequestEventRefTypes);
-                    console.log(countIssuesEventRefTypes);
+                    //console.log(countEventTypes);
+                    //console.log(countCreateEventRefTypes);
+                    //console.log(countPullRequestEventRefTypes);
+                    //console.log(countIssuesEventRefTypes);
 
-                    console.log(countRepoEvents);
+                    //console.log(countRepoEvents);
 
                     drawChart(countEventTypes);
                     drawChart2(countRepoEvents);
+                    drawChart3(countRepoEvents, username);
 
                 });
 
