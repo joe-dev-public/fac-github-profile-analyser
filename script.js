@@ -167,16 +167,21 @@ function drawChart3(myDataObj, username) {
 
     for (const [_, value] of Object.entries(myDataObj)) {
         const eventUsername = value['name'].split('/')[0];
-        //if (eventUsername !== username) {
-            // We might need to use another object to count how many times a single user appears,
-            // regardless of repo.
-            //if 
+        if (eventUsername !== username) {
+            /*  If the eventUsername already exists in the myLabels array, don't push it
+                again, but instead add the count to the element with the same index in the
+                myData array.
+            */
+            if (myLabels.indexOf(eventUsername) !== -1) {
+                myData[myLabels.indexOf(eventUsername)] += value['count'];
+            } else {
                 myLabels.push(eventUsername);
                 myData.push(value['count']);
-        //}
+            }
+        }
     }
 
-    console.log(myLabels);
+    //console.log(myLabels);
 
     const data = {
         labels: myLabels,
