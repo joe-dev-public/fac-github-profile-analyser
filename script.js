@@ -1,6 +1,23 @@
 'use strict';
 
 
+// Chart.js won't provide colours, so make a nice set/function to generate.
+const backgroundColours = [
+    'rgb(255, 0, 0)',
+    'rgb(0, 255, 0)',
+    'rgb(0, 0, 255)',
+    'rgb(255, 255, 0)',
+    'rgb(0, 255, 255)',
+    'rgb(255, 0, 255)',
+    'rgb(127, 0, 0)',
+    'rgb(0, 127, 0)',
+    'rgb(0, 0, 127)',
+    'rgb(127, 127, 0)',
+    'rgb(0, 127, 127)',
+    'rgb(127, 0, 127)',
+];
+
+
 
 function drawChart(myDataObj) {
 
@@ -15,17 +32,7 @@ function drawChart(myDataObj) {
         datasets: [
             {
                 /* label: 'Testing', */
-                // Chart.js won't provide colours, so make a nice set/function to generate.
-                backgroundColor: [
-                'rgb(255, 0, 0)',
-                'rgb(0, 255, 0)',
-                'rgb(0, 0, 255)',
-                'rgb(255, 255, 0)',
-                'rgb(0, 255, 255)',
-                'rgb(255, 0, 255)',
-                //'rgb(255, 255, 255)',
-                //'rgb(0, 0, 0)',
-                ],
+                backgroundColor: backgroundColours,
                 data: myData,
             },
         ]
@@ -39,6 +46,7 @@ function drawChart(myDataObj) {
             events: [],
             plugins: {
                 legend: {
+                    display: false,
                     labels: {
                         // https://stackoverflow.com/questions/39454586/pie-chart-legend-chart-js
                         // --> https://jsfiddle.net/6bexkyd9/
@@ -74,15 +82,28 @@ function drawChart(myDataObj) {
     // Make the text a bit bigger:
     //Chart.defaults.font.size = 16;
 
-    if (myChart) {
+    if (myChart1) {
         // If chart already exists, destroy it before creating a new one:
-        myChart.destroy();
+        myChart1.destroy();
     } 
 
-    myChart = new Chart(
-        document.getElementById('chart'),
+    myChart1 = new Chart(
+        document.getElementById('chart1'),
         config
     );
+
+    const chart1LegendEl = document.getElementById('chart1legend');
+
+    let html = '<ul>';
+
+    for (let i = 0; i < myLabels.length; i++) {
+        const idx = i % backgroundColours.length;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
+    }
+
+    html += '</ul>';
+
+    chart1LegendEl.innerHTML = html;
 
 } // End of function drawChart
 
@@ -103,20 +124,7 @@ function drawChart2(myDataObj) {
         datasets: [
             {
                 data: myData,
-                backgroundColor: [
-                'rgb(255, 0, 0)',
-                'rgb(0, 255, 0)',
-                'rgb(0, 0, 255)',
-                'rgb(255, 255, 0)',
-                'rgb(0, 255, 255)',
-                'rgb(255, 0, 255)',
-                'rgb(127, 0, 0)',
-                'rgb(0, 127, 0)',
-                'rgb(0, 0, 127)',
-                'rgb(127, 127, 0)',
-                'rgb(0, 127, 127)',
-                'rgb(127, 0, 127)',
-                ],
+                backgroundColor: backgroundColours,
             },
         ]
     };
@@ -128,6 +136,7 @@ function drawChart2(myDataObj) {
             events: [],
             plugins: {
                 legend: {
+                    display: false,
                     /* labels: {
                         font: {
                             size: 16,
@@ -147,6 +156,22 @@ function drawChart2(myDataObj) {
         document.getElementById('chart2'),
         config
     );
+
+    const chart2LegendEl = document.getElementById('chart2legend');
+
+    let html = '<ul>';
+
+    let i = 0;
+    for (const [key, value] of Object.entries(myDataObj)) {
+        // I spent *way* too much time trying to work this out. You just need the remainder!
+        const idx = i % backgroundColours.length;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${value['name']}: ${value['count']}</li>`;
+        i++;
+    }
+
+    html += '</ul>';
+
+    chart2LegendEl.innerHTML = html;
 
 } // End of function drawChart2
 
@@ -188,20 +213,7 @@ function drawChart3(myDataObj, username) {
         datasets: [
             {
                 data: myData,
-                backgroundColor: [
-                'rgb(255, 0, 0)',
-                'rgb(0, 255, 0)',
-                'rgb(0, 0, 255)',
-                'rgb(255, 255, 0)',
-                'rgb(0, 255, 255)',
-                'rgb(255, 0, 255)',
-                'rgb(127, 0, 0)',
-                'rgb(0, 127, 0)',
-                'rgb(0, 0, 127)',
-                'rgb(127, 127, 0)',
-                'rgb(0, 127, 127)',
-                'rgb(127, 0, 127)',
-                ],
+                backgroundColor: backgroundColours,
             },
         ]
     };
@@ -213,6 +225,7 @@ function drawChart3(myDataObj, username) {
             events: [],
             plugins: {
                 legend: {
+                    display: false,
                     labels: {
                         font: {
                             size: 16,
@@ -234,11 +247,24 @@ function drawChart3(myDataObj, username) {
         config
     );
 
+    const chart3LegendEl = document.getElementById('chart3legend');
+
+    let html = '<ul>';
+
+    for (let i = 0; i < myLabels.length; i++) {
+        const idx = i % backgroundColours.length;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
+    }
+
+    html += '</ul>';
+
+    chart3LegendEl.innerHTML = html;
+
 } // End of function drawChart3
 
 
 
-let myChart = undefined;
+let myChart1 = undefined;
 let myChart2 = undefined;
 let myChart3 = undefined;
 
