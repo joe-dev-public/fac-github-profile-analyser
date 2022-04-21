@@ -20,6 +20,7 @@
 const backgroundColours = [];
 
 function generateColourPalette() {
+    /*
     // 1:
     for (let i = 255; i >= 127; i -= 64) {
         backgroundColours.push(`rgb(${i}, 0, 0)`);
@@ -71,6 +72,32 @@ function generateColourPalette() {
     for (let i = 255; i >= 127; i -= 64) {
         backgroundColours.push(`rgb(0, ${i/2}, ${i})`);
     }
+    */
+
+    // Not usable, but "easy on the eye" for testing purposes:
+    for (let i = 223; i >= 0; i -= 32) {
+        backgroundColours.push(`rgb(${i} ${i} ${i})`);
+    }
+
+    for (let i = 223; i >= 31; i -= 32) {
+        backgroundColours.push(`rgb(${i+32} ${i-31} ${i-31})`);
+    }
+    for (let i = 223; i >= 31; i -= 32) {
+        backgroundColours.push(`rgb(${i-31} ${i+32} ${i-31})`);
+    }
+    for (let i = 223; i >= 31; i -= 32) {
+        backgroundColours.push(`rgb(${i-31} ${i-31} ${i+32})`);
+    }
+
+    for (let i = 223; i >= 31; i -= 32) {
+        backgroundColours.push(`rgb(${i+32} ${i+32} ${i-31})`);
+    }
+    for (let i = 223; i >= 31; i -= 32) {
+        backgroundColours.push(`rgb(${i+32} ${i-31} ${i+32})`);
+    }
+    for (let i = 223; i >= 31; i -= 32) {
+        backgroundColours.push(`rgb(${i-31} ${i+32} ${i+32})`);
+    }
 }
 
 generateColourPalette();
@@ -82,8 +109,49 @@ function drawChart(myDataObj) {
     /*  Take an object with labels: numbers.
     */
 
-    const myLabels = Object.keys(myDataObj);
-    const myData = Object.values(myDataObj);
+    // Sort desc:
+
+    const myLabels = [];
+    const myData = [];
+
+    /* const myLabels = Object.keys(myDataObj);
+    const myData = Object.values(myDataObj); */
+
+    const coupleArray = [];
+
+    for (const [key, val] of Object.entries(myDataObj)) {
+        coupleArray.push([key, val]);
+    }
+
+
+    // Initialise the sorted array with the first element from the unsorted array
+    const sortedCoupleArray = [coupleArray[0]];
+
+    // Skip the first element (cos it's already in the sorted array, as initialised above)
+    for (let i = 1; i < coupleArray.length; i++) {
+
+        const [label, value] = [coupleArray[i][0], coupleArray[i][1]];
+
+        for (let j = 0; j < sortedCoupleArray.length; j++) {
+            if (value > sortedCoupleArray[j][1]) {
+                // splice, not unshift - wake up! :B
+                sortedCoupleArray.splice(j, 0, [label, value]);
+                break;
+            } else {
+                if (j === sortedCoupleArray.length - 1) {
+                    sortedCoupleArray.push([label, value]);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    for (let i = 0; i < sortedCoupleArray.length; i++) {
+        myLabels.push(sortedCoupleArray[i][0]);
+        myData.push(sortedCoupleArray[i][1]);
+    }
+
 
     const data = {
         labels: myLabels,
@@ -174,10 +242,47 @@ function drawChart2(myDataObj) {
     const myLabels = [];
     const myData = [];
 
-    for (const [key, value] of Object.entries(myDataObj)) {
+    /* for (const [key, value] of Object.entries(myDataObj)) {
         myLabels.push(value['name']);
         myData.push(value['count']);
+    } */
+
+    // Overly-long sort desc:
+
+    const coupleArray = [];
+
+    for (const [key, val] of Object.entries(myDataObj)) {
+        coupleArray.push([val['name'], val['count']]);
     }
+
+    // Initialise the sorted array with the first element from the unsorted array
+    const sortedCoupleArray = [coupleArray[0]];
+
+    // Skip the first element (cos it's already in the sorted array, as initialised above)
+    for (let i = 1; i < coupleArray.length; i++) {
+
+        const [label, value] = [coupleArray[i][0], coupleArray[i][1]];
+
+        for (let j = 0; j < sortedCoupleArray.length; j++) {
+            if (value > sortedCoupleArray[j][1]) {
+                // splice, not unshift - wake up! :B
+                sortedCoupleArray.splice(j, 0, [label, value]);
+                break;
+            } else {
+                if (j === sortedCoupleArray.length - 1) {
+                    sortedCoupleArray.push([label, value]);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    for (let i = 0; i < sortedCoupleArray.length; i++) {
+        myLabels.push(sortedCoupleArray[i][0]);
+        myData.push(sortedCoupleArray[i][1]);
+    }
+
 
     const data = {
         labels: myLabels,
@@ -222,12 +327,10 @@ function drawChart2(myDataObj) {
 
     let html = '<details open=""><summary>Repos most interacted with recently:</summary><ul>';
 
-    let i = 0;
-    for (const [key, value] of Object.entries(myDataObj)) {
+    for (let i = 0; i < myLabels.length; i++) {
         // I spent *way* too much time trying to work this out. You just need the remainder!
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${value['name']}">${value['name']}</a>: ${value['count']}</li>`;
-        i++;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
     }
 
     html += '</ul></details>';
@@ -242,6 +345,8 @@ function drawChart3(myDataObj, username) {
 
     const myLabels = [];
     const myData = [];
+
+    const coupleArray = [];
 
     /*  We want to draw a chart to show the most frequent (recent) collaborators.
         So we can use the same data as before, but we'll need to count its contents differently.
@@ -261,13 +366,42 @@ function drawChart3(myDataObj, username) {
             if (myLabels.indexOf(eventUsername) !== -1) {
                 myData[myLabels.indexOf(eventUsername)] += value['count'];
             } else {
-                myLabels.push(eventUsername);
-                myData.push(value['count']);
+                //myLabels.push(eventUsername);
+                //myData.push(value['count']);
+                coupleArray.push([eventUsername, value['count']]);
             }
         }
     }
 
-    //console.log(myLabels);
+    // Initialise the sorted array with the first element from the unsorted array
+    const sortedCoupleArray = [coupleArray[0]];
+
+    // Skip the first element (cos it's already in the sorted array, as initialised above)
+    for (let i = 1; i < coupleArray.length; i++) {
+
+        const [label, value] = [coupleArray[i][0], coupleArray[i][1]];
+
+        for (let j = 0; j < sortedCoupleArray.length; j++) {
+            if (value > sortedCoupleArray[j][1]) {
+                // splice, not unshift - wake up! :B
+                sortedCoupleArray.splice(j, 0, [label, value]);
+                break;
+            } else {
+                if (j === sortedCoupleArray.length - 1) {
+                    sortedCoupleArray.push([label, value]);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    for (let i = 0; i < sortedCoupleArray.length; i++) {
+        myLabels.push(sortedCoupleArray[i][0]);
+        myData.push(sortedCoupleArray[i][1]);
+    }
+
+
 
     const data = {
         labels: myLabels,
