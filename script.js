@@ -96,14 +96,14 @@ function drawChart(myDataObj) {
 
     const chart1LegendEl = document.getElementById('chart1legend');
 
-    let html = '<ul>';
+    let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
         html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
     }
 
-    html += '</ul>';
+    html += '</ul></details>';
 
     chart1LegendEl.innerHTML = html;
 
@@ -162,7 +162,7 @@ function drawChart2(myDataObj) {
 
     const chart2LegendEl = document.getElementById('chart2legend');
 
-    let html = '<ul>';
+    let html = '<details open=""><summary>Repos most interacted with recently:</summary><ul>';
 
     let i = 0;
     for (const [key, value] of Object.entries(myDataObj)) {
@@ -172,7 +172,7 @@ function drawChart2(myDataObj) {
         i++;
     }
 
-    html += '</ul>';
+    html += '</ul></details>';
 
     chart2LegendEl.innerHTML = html;
 
@@ -253,14 +253,14 @@ function drawChart3(myDataObj, username) {
 
     const chart3LegendEl = document.getElementById('chart3legend');
 
-    let html = '<ul>';
+    let html = '<details open=""><summary>Accounts most interacted with recently:</summary><ul>';
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
         html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
     }
 
-    html += '</ul>';
+    html += '</ul></details>';
 
     chart3LegendEl.innerHTML = html;
 
