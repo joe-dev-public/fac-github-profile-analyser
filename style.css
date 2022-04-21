@@ -44,3 +44,7 @@ details > ul {
     display: inline-block;
     margin-right: 0.75rem;
 }
+
+.chart-container {
+    margin-bottom: 1rem;
+}
