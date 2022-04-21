@@ -2,7 +2,7 @@
 
 
 // Chart.js won't provide colours, so make a nice set/function to generate.
-const backgroundColours = [
+/* const backgroundColours = [
     'rgb(255, 0, 0)',
     'rgb(0, 255, 0)',
     'rgb(0, 0, 255)',
@@ -15,7 +15,65 @@ const backgroundColours = [
     'rgb(127, 127, 0)',
     'rgb(0, 127, 127)',
     'rgb(127, 0, 127)',
-];
+]; */
+
+const backgroundColours = [];
+
+function generateColourPalette() {
+    // 1:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, 0, 0)`);
+    }
+    // 2:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i}, 0)`);
+    }
+    // 3:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, 0, ${i})`);
+    }
+
+    // 4:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, ${i}, 0)`);
+    }
+    // 5:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, 0, ${i})`);
+    }
+    // 6:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i}, ${i})`);
+    }
+
+    // 7:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, ${i/2}, 0)`);
+    }
+    // 8:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, 0, ${i/2})`);
+    }
+    // 9:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i}, ${i/2})`);
+    }
+
+    // 10:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i/2}, ${i}, 0)`);
+    }
+    // 11:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i/2}, 0, ${i})`);
+    }
+    // 12:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i/2}, ${i})`);
+    }
+}
+
+generateColourPalette();
 
 
 
