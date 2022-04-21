@@ -168,7 +168,7 @@ function drawChart2(myDataObj) {
     for (const [key, value] of Object.entries(myDataObj)) {
         // I spent *way* too much time trying to work this out. You just need the remainder!
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${value['name']}: ${value['count']}</li>`;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${value['name']}">${value['name']}</a>: ${value['count']}</li>`;
         i++;
     }
 
@@ -257,7 +257,7 @@ function drawChart3(myDataObj, username) {
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
     }
 
     html += '</ul>';
