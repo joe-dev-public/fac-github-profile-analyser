@@ -35,11 +35,12 @@ summary:hover {
 }
 
 details > ul {
+    list-style-type: none;
     margin: 0.75rem 0 0 1rem;
     padding: 0 0 1rem 0;
 }
 
-details > ul > li {
+#results > details > ul > li {
     display: inline-block;
     margin-right: 0.75rem;
 }
