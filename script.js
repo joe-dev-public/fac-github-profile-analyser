@@ -2,7 +2,7 @@
 
 
 // Chart.js won't provide colours, so make a nice set/function to generate.
-const backgroundColours = [
+/* const backgroundColours = [
     'rgb(255, 0, 0)',
     'rgb(0, 255, 0)',
     'rgb(0, 0, 255)',
@@ -15,7 +15,65 @@ const backgroundColours = [
     'rgb(127, 127, 0)',
     'rgb(0, 127, 127)',
     'rgb(127, 0, 127)',
-];
+]; */
+
+const backgroundColours = [];
+
+function generateColourPalette() {
+    // 1:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, 0, 0)`);
+    }
+    // 2:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i}, 0)`);
+    }
+    // 3:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, 0, ${i})`);
+    }
+
+    // 4:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, ${i}, 0)`);
+    }
+    // 5:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, 0, ${i})`);
+    }
+    // 6:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i}, ${i})`);
+    }
+
+    // 7:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, ${i/2}, 0)`);
+    }
+    // 8:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i}, 0, ${i/2})`);
+    }
+    // 9:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i}, ${i/2})`);
+    }
+
+    // 10:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i/2}, ${i}, 0)`);
+    }
+    // 11:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(${i/2}, 0, ${i})`);
+    }
+    // 12:
+    for (let i = 255; i >= 127; i -= 64) {
+        backgroundColours.push(`rgb(0, ${i/2}, ${i})`);
+    }
+}
+
+generateColourPalette();
 
 
 
@@ -42,8 +100,10 @@ function drawChart(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            responsive: false,
             // Get rid of mouse hover stuff:
             events: [],
+            //maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false,
@@ -94,14 +154,14 @@ function drawChart(myDataObj) {
 
     const chart1LegendEl = document.getElementById('chart1legend');
 
-    let html = '<ul>';
+    let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
         html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
     }
 
-    html += '</ul>';
+    html += '</ul></details>';
 
     chart1LegendEl.innerHTML = html;
 
@@ -133,6 +193,7 @@ function drawChart2(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            responsive: false,
             events: [],
             plugins: {
                 legend: {
@@ -159,17 +220,17 @@ function drawChart2(myDataObj) {
 
     const chart2LegendEl = document.getElementById('chart2legend');
 
-    let html = '<ul>';
+    let html = '<details open=""><summary>Repos most interacted with recently:</summary><ul>';
 
     let i = 0;
     for (const [key, value] of Object.entries(myDataObj)) {
         // I spent *way* too much time trying to work this out. You just need the remainder!
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${value['name']}: ${value['count']}</li>`;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${value['name']}">${value['name']}</a>: ${value['count']}</li>`;
         i++;
     }
 
-    html += '</ul>';
+    html += '</ul></details>';
 
     chart2LegendEl.innerHTML = html;
 
@@ -222,6 +283,7 @@ function drawChart3(myDataObj, username) {
         type: 'pie',
         data: data,
         options: {
+            responsive: false,
             events: [],
             plugins: {
                 legend: {
@@ -249,14 +311,14 @@ function drawChart3(myDataObj, username) {
 
     const chart3LegendEl = document.getElementById('chart3legend');
 
-    let html = '<ul>';
+    let html = '<details open=""><summary>Accounts most interacted with recently:</summary><ul>';
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
     }
 
-    html += '</ul>';
+    html += '</ul></details>';
 
     chart3LegendEl.innerHTML = html;
 
@@ -317,7 +379,7 @@ ${response['login']}
                     if (response.length === 0) {
                         resultsEl.innerHTML += '<p>None</p>';
                     } else {
-                        let html = `<details><summary>⭐ ${response.length}</summary><ul>`;
+                        let html = `<details open=""><summary>⭐ ${response.length}</summary><ul>`;
                         response.forEach((element) => {
                             // An array of objects for each starred project
                             html += `<li><a href="${element['html_url']}">${element['name']}</a></li>`;
