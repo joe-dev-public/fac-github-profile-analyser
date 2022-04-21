@@ -321,7 +321,7 @@ ${response['login']}
                     if (response.length === 0) {
                         resultsEl.innerHTML += '<p>None</p>';
                     } else {
-                        let html = `<details><summary>⭐ ${response.length}</summary><ul>`;
+                        let html = `<details open=""><summary>⭐ ${response.length}</summary><ul>`;
                         response.forEach((element) => {
                             // An array of objects for each starred project
                             html += `<li><a href="${element['html_url']}">${element['name']}</a></li>`;
