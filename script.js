@@ -42,8 +42,10 @@ function drawChart(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            responsive: false,
             // Get rid of mouse hover stuff:
             events: [],
+            //maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false,
@@ -133,6 +135,7 @@ function drawChart2(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            responsive: false,
             events: [],
             plugins: {
                 legend: {
@@ -222,6 +225,7 @@ function drawChart3(myDataObj, username) {
         type: 'pie',
         data: data,
         options: {
+            responsive: false,
             events: [],
             plugins: {
                 legend: {

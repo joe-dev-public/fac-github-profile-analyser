@@ -8,3 +8,38 @@
     margin: 0 auto;
     max-width: 42rem;
 }
+
+img {
+    margin-right: 0.5rem;
+    max-width: 8rem;
+}
+
+.stack > * + * {
+    margin-top: 1rem;
+}
+
+details {
+    background-color: hsl(0, 0%, 95%);
+    border-radius: 0.25rem;
+}
+
+summary {
+    border-radius: 0.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    user-select: none;
+}
+
+summary:hover {
+    background-color: hsl(0, 0%, 90%);
+}
+
+details > ul {
+    margin: 0.75rem 0 0 1rem;
+    padding: 0 0 1rem 0;
+}
+
+details > ul > li {
+    display: inline-block;
+    margin-right: 0.75rem;
+}
