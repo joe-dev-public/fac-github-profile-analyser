@@ -214,8 +214,8 @@ function drawChart(myDataObj) {
 
     activitySectionEl.innerHTML = '';
 
-    const activityHeadingEl = document.createElement('h2');
-    activityHeadingEl.innerText = 'Recent activity:';
+    const activitySectionHeadingEl = document.createElement('h2');
+    activitySectionHeadingEl.innerText = 'Recent activity:';
 
     const activityChartContainerEl = document.createElement('div');
     activityChartContainerEl.classList.add('chart-container');
@@ -245,7 +245,7 @@ function drawChart(myDataObj) {
 
     activityChartContainerEl.append(activityChartEl);
 
-    activitySectionEl.append(activityHeadingEl);
+    activitySectionEl.append(activitySectionHeadingEl);
     activitySectionEl.append(activityChartContainerEl);
     activitySectionEl.append(activityChartLegendEl);
 
@@ -334,8 +334,8 @@ function drawChart2(myDataObj) {
 
     reposSectionEl.innerHTML = '';
 
-    const reposHeadingEl = document.createElement('h2');
-    reposHeadingEl.innerText = 'Most popular repos:';
+    const reposSectionHeadingEl = document.createElement('h2');
+    reposSectionHeadingEl.innerText = 'Most popular repos:';
 
     const reposChartContainerEl = document.createElement('div');
     reposChartContainerEl.classList.add('chart-container');
@@ -365,7 +365,7 @@ function drawChart2(myDataObj) {
 
     reposChartContainerEl.append(reposChartEl);
 
-    reposSectionEl.append(reposHeadingEl);
+    reposSectionEl.append(reposSectionHeadingEl);
     reposSectionEl.append(reposChartContainerEl);
     reposSectionEl.append(reposChartLegendEl);
 
@@ -469,8 +469,8 @@ function drawChart3(myDataObj, username) {
 
     collaboratorsSectionEl.innerHTML = '';
 
-    const collaboratorsHeadingEl = document.createElement('h2');
-    collaboratorsHeadingEl.innerText = 'Top collaborators:';
+    const collaboratorsSectionHeadingEl = document.createElement('h2');
+    collaboratorsSectionHeadingEl.innerText = 'Top collaborators:';
 
     const collaboratorsChartContainerEl = document.createElement('div');
     collaboratorsChartContainerEl.classList.add('chart-container');
@@ -500,7 +500,7 @@ function drawChart3(myDataObj, username) {
 
     collaboratorsChartContainerEl.append(collaboratorsChartEl);
 
-    collaboratorsSectionEl.append(collaboratorsHeadingEl);
+    collaboratorsSectionEl.append(collaboratorsSectionHeadingEl);
     collaboratorsSectionEl.append(collaboratorsChartContainerEl);
     collaboratorsSectionEl.append(collaboratorsChartLegendEl);
 
@@ -512,11 +512,15 @@ let myChart1 = undefined;
 let myChart2 = undefined;
 let myChart3 = undefined;
 
+
 const mainEl = document.querySelector('main');
 
-const resultsEl = document.querySelector('#results');
-
 const formEl = document.querySelector('form');
+
+const profileEl = document.getElementById('profile');
+
+const starsEl = document.getElementById('stars');
+
 
 formEl.addEventListener('submit', (event) => {
 
@@ -533,7 +537,8 @@ formEl.addEventListener('submit', (event) => {
             if (response.status === 200) {
                 return response.json();
             } else {
-                resultsEl.innerHTML = `<p>Profile not found</p>`;
+                profileEl.innerHTML = `<p>Profile not found</p>`;
+                throw new Error("Profile not found!");
             }
         })
         .then((response) => {
@@ -546,10 +551,9 @@ formEl.addEventListener('submit', (event) => {
 <img src="${response['avatar_url']}">
 ${response['login']}
 </a>
-<h2>Starred projects:</h2>
 `;
 
-            resultsEl.innerHTML = html;
+            profileEl.innerHTML = html;
 
             // Starred projects:
             //response['starred_url']
@@ -559,17 +563,39 @@ ${response['login']}
                 })
                 .then((response) => {
                     //console.log(response);
+
+                    starsEl.innerHTML = '';
+
+                    const starsSectionHeadingEl = document.createElement('h2');
+                    starsSectionHeadingEl.innerHTML = 'Starred projects:';
+                    starsEl.append(starsSectionHeadingEl);
+
+                    const starsDetailsEl = document.createElement('details');
+                    starsDetailsEl.setAttribute('open', '');
+
+                    const starsDetailsSummaryEl = document.createElement('summary');
+                    starsDetailsSummaryEl.innerHTML = `⭐ ${response.length}`;
+                    starsDetailsEl.append(starsDetailsSummaryEl);
+
                     // An array of starred projects (length zero if none)
                     if (response.length === 0) {
-                        resultsEl.innerHTML += '<p>None</p>';
+                        // This isn't necessarily a good approach:
+                        starsDetailsEl.append(document.createElement('p').innerHTML = 'No starred projects. 🙁');
                     } else {
-                        let html = `<details open=""><summary>⭐ ${response.length}</summary><ul>`;
+                        const starsListEl = document.createElement('ul');
                         response.forEach((element) => {
                             // An array of objects for each starred project
-                            html += `<li><a href="${element['html_url']}">${element['name']}</a></li>`;
+                            const listItemEl = document.createElement('li');
+                            listItemEl.innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`;
+                            starsListEl.append(listItemEl);
+                            // Trying to do it in one go like this means that the HTML renders as text, for some reason:
+                            //starsListEl.append(document.createElement('li').innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`);
                         });
-                        resultsEl.innerHTML += html + '</ul></details>';
+                        starsDetailsEl.append(starsListEl);
                     }
+
+                    starsEl.append(starsDetailsEl);
+
                 });
 
 
