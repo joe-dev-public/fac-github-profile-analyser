@@ -267,8 +267,16 @@ function drawChart2(myDataObj) {
 
     const coupleArray = [];
 
+    /*  If the repo appears multiple times in the data, make sure its count is
+        incremented, rather than having nonsensical separate slices of pie.
+    */
     for (const [key, val] of Object.entries(myDataObj)) {
-        coupleArray.push([val['name'], val['count']]);
+        const idx = coupleArray.flat().indexOf(val['name']);
+        if (idx !== -1) {
+            coupleArray[idx/2][1] += val['count'];
+        } else {
+            coupleArray.push([val['name'], val['count']]);
+        }
     }
 
     // Initialise the sorted array with the first element from the unsorted array
@@ -390,20 +398,23 @@ function drawChart3(myDataObj, username) {
 
     for (const [_, value] of Object.entries(myDataObj)) {
         const eventUsername = value['name'].split('/')[0];
-        if (eventUsername !== username) {
-            /*  If the eventUsername already exists in the myLabels array, don't push it
-                again, but instead add the count to the element with the same index in the
-                myData array.
+        //if (eventUsername !== username) {
+            /*  If the eventUsername already exists in the coupleArray, don't push it
+                again, but instead add the count to the relevant element.
             */
-            if (myLabels.indexOf(eventUsername) !== -1) {
-                myData[myLabels.indexOf(eventUsername)] += value['count'];
+
+            const idx = coupleArray.flat().indexOf(eventUsername);
+            if (idx !== -1) {
+                coupleArray[idx/2][1] += value['count'];
             } else {
                 //myLabels.push(eventUsername);
                 //myData.push(value['count']);
                 coupleArray.push([eventUsername, value['count']]);
             }
-        }
+        //}
     }
+
+    //console.log(coupleArray.flat());
 
     // Initialise the sorted array with the first element from the unsorted array
     const sortedCoupleArray = [coupleArray[0]];
@@ -491,7 +502,11 @@ function drawChart3(myDataObj, username) {
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
+        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">`;
+        //if (myLabels[i] === username) { html += `*`; }
+        html += `${myLabels[i]}</a>: ${myData[i]}`;
+        if (myLabels[i] === username) { html += ` <em><!-- &larr;  -->(this is the user you searched for)</em>`; }
+        html += `</li>`;
     }
 
     html += '</ul></details>';

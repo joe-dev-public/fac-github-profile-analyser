@@ -48,3 +48,9 @@ details > ul {
 .chart-container {
     margin-bottom: 1rem;
 }
+
+/* li > em {
+    color:hsl(0, 0%, 30%);
+    font-size: 0.85rem;
+    font-weight: bold;
+} */
