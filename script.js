@@ -210,17 +210,27 @@ function drawChart(myDataObj) {
     // Make the text a bit bigger:
     //Chart.defaults.font.size = 16;
 
+    const activitySectionEl = document.getElementById('activity');
+
+    activitySectionEl.innerHTML = '';
+
+    const activityHeadingEl = document.createElement('h2');
+    activityHeadingEl.innerText = 'Recent activity:';
+
+    const activityChartContainerEl = document.createElement('div');
+    activityChartContainerEl.classList.add('chart-container');
+    const activityChartEl = document.createElement('canvas');
+    const activityChartLegendEl = document.createElement('div');
+
     if (myChart1) {
         // If chart already exists, destroy it before creating a new one:
         myChart1.destroy();
     } 
 
     myChart1 = new Chart(
-        document.getElementById('chart1'),
+        activityChartEl,
         config
     );
-
-    const chart1LegendEl = document.getElementById('chart1legend');
 
     let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
 
@@ -231,7 +241,13 @@ function drawChart(myDataObj) {
 
     html += '</ul></details>';
 
-    chart1LegendEl.innerHTML = html;
+    activityChartLegendEl.innerHTML = html;
+
+    activityChartContainerEl.append(activityChartEl);
+
+    activitySectionEl.append(activityHeadingEl);
+    activitySectionEl.append(activityChartContainerEl);
+    activitySectionEl.append(activityChartLegendEl);
 
 } // End of function drawChart
 
@@ -314,16 +330,26 @@ function drawChart2(myDataObj) {
         },
     };
 
+    const reposSectionEl = document.getElementById('repos');
+
+    reposSectionEl.innerHTML = '';
+
+    const reposHeadingEl = document.createElement('h2');
+    reposHeadingEl.innerText = 'Most popular repos:';
+
+    const reposChartContainerEl = document.createElement('div');
+    reposChartContainerEl.classList.add('chart-container');
+    const reposChartEl = document.createElement('canvas');
+    const reposChartLegendEl = document.createElement('div');
+
     if (myChart2) {
         myChart2.destroy();
     } 
 
     myChart2 = new Chart(
-        document.getElementById('chart2'),
+        reposChartEl,
         config
     );
-
-    const chart2LegendEl = document.getElementById('chart2legend');
 
     let html = '<details open=""><summary>Repos most interacted with recently:</summary><ul>';
 
@@ -335,7 +361,13 @@ function drawChart2(myDataObj) {
 
     html += '</ul></details>';
 
-    chart2LegendEl.innerHTML = html;
+    reposChartLegendEl.innerHTML = html;
+
+    reposChartContainerEl.append(reposChartEl);
+
+    reposSectionEl.append(reposHeadingEl);
+    reposSectionEl.append(reposChartContainerEl);
+    reposSectionEl.append(reposChartLegendEl);
 
 } // End of function drawChart2
 
@@ -433,17 +465,27 @@ function drawChart3(myDataObj, username) {
         },
     };
 
+    const collaboratorsSectionEl = document.getElementById('collaborators');
+
+    collaboratorsSectionEl.innerHTML = '';
+
+    const collaboratorsHeadingEl = document.createElement('h2');
+    collaboratorsHeadingEl.innerText = 'Top collaborators:';
+
+    const collaboratorsChartContainerEl = document.createElement('div');
+    collaboratorsChartContainerEl.classList.add('chart-container');
+    const collaboratorsChartEl = document.createElement('canvas');
+    const collaboratorsChartLegendEl = document.createElement('div');
+
     if (myChart3) {
         // If chart already exists, destroy it before creating a new one:
         myChart3.destroy();
-    } 
+    }
 
     myChart3 = new Chart(
-        document.getElementById('chart3'),
+        collaboratorsChartEl,
         config
     );
-
-    const chart3LegendEl = document.getElementById('chart3legend');
 
     let html = '<details open=""><summary>Accounts most interacted with recently:</summary><ul>';
 
@@ -454,7 +496,13 @@ function drawChart3(myDataObj, username) {
 
     html += '</ul></details>';
 
-    chart3LegendEl.innerHTML = html;
+    collaboratorsChartLegendEl.innerHTML = html;
+
+    collaboratorsChartContainerEl.append(collaboratorsChartEl);
+
+    collaboratorsSectionEl.append(collaboratorsHeadingEl);
+    collaboratorsSectionEl.append(collaboratorsChartContainerEl);
+    collaboratorsSectionEl.append(collaboratorsChartLegendEl);
 
 } // End of function drawChart3
 
@@ -463,6 +511,8 @@ function drawChart3(myDataObj, username) {
 let myChart1 = undefined;
 let myChart2 = undefined;
 let myChart3 = undefined;
+
+const mainEl = document.querySelector('main');
 
 const resultsEl = document.querySelector('#results');
 
