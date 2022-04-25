@@ -15,7 +15,7 @@ img {
 }
 
 .stack > * + * {
-    margin-top: 1rem;
+    margin-top: 5rem;
 }
 
 details {
@@ -40,7 +40,7 @@ details > ul {
     padding: 0 0 1rem 0;
 }
 
-#results > details > ul > li {
+#stars > details > ul > li {
     display: inline-block;
     margin-right: 0.75rem;
 }

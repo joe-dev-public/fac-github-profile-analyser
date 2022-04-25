@@ -210,17 +210,27 @@ function drawChart(myDataObj) {
     // Make the text a bit bigger:
     //Chart.defaults.font.size = 16;
 
+    const activitySectionEl = document.getElementById('activity');
+
+    activitySectionEl.innerHTML = '';
+
+    const activitySectionHeadingEl = document.createElement('h2');
+    activitySectionHeadingEl.innerText = 'Recent activity:';
+
+    const activityChartContainerEl = document.createElement('div');
+    activityChartContainerEl.classList.add('chart-container');
+    const activityChartEl = document.createElement('canvas');
+    const activityChartLegendEl = document.createElement('div');
+
     if (myChart1) {
         // If chart already exists, destroy it before creating a new one:
         myChart1.destroy();
     } 
 
     myChart1 = new Chart(
-        document.getElementById('chart1'),
+        activityChartEl,
         config
     );
-
-    const chart1LegendEl = document.getElementById('chart1legend');
 
     let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
 
@@ -231,7 +241,13 @@ function drawChart(myDataObj) {
 
     html += '</ul></details>';
 
-    chart1LegendEl.innerHTML = html;
+    activityChartLegendEl.innerHTML = html;
+
+    activityChartContainerEl.append(activityChartEl);
+
+    activitySectionEl.append(activitySectionHeadingEl);
+    activitySectionEl.append(activityChartContainerEl);
+    activitySectionEl.append(activityChartLegendEl);
 
 } // End of function drawChart
 
@@ -314,16 +330,26 @@ function drawChart2(myDataObj) {
         },
     };
 
+    const reposSectionEl = document.getElementById('repos');
+
+    reposSectionEl.innerHTML = '';
+
+    const reposSectionHeadingEl = document.createElement('h2');
+    reposSectionHeadingEl.innerText = 'Most popular repos:';
+
+    const reposChartContainerEl = document.createElement('div');
+    reposChartContainerEl.classList.add('chart-container');
+    const reposChartEl = document.createElement('canvas');
+    const reposChartLegendEl = document.createElement('div');
+
     if (myChart2) {
         myChart2.destroy();
     } 
 
     myChart2 = new Chart(
-        document.getElementById('chart2'),
+        reposChartEl,
         config
     );
-
-    const chart2LegendEl = document.getElementById('chart2legend');
 
     let html = '<details open=""><summary>Repos most interacted with recently:</summary><ul>';
 
@@ -335,7 +361,13 @@ function drawChart2(myDataObj) {
 
     html += '</ul></details>';
 
-    chart2LegendEl.innerHTML = html;
+    reposChartLegendEl.innerHTML = html;
+
+    reposChartContainerEl.append(reposChartEl);
+
+    reposSectionEl.append(reposSectionHeadingEl);
+    reposSectionEl.append(reposChartContainerEl);
+    reposSectionEl.append(reposChartLegendEl);
 
 } // End of function drawChart2
 
@@ -433,17 +465,27 @@ function drawChart3(myDataObj, username) {
         },
     };
 
+    const collaboratorsSectionEl = document.getElementById('collaborators');
+
+    collaboratorsSectionEl.innerHTML = '';
+
+    const collaboratorsSectionHeadingEl = document.createElement('h2');
+    collaboratorsSectionHeadingEl.innerText = 'Top collaborators:';
+
+    const collaboratorsChartContainerEl = document.createElement('div');
+    collaboratorsChartContainerEl.classList.add('chart-container');
+    const collaboratorsChartEl = document.createElement('canvas');
+    const collaboratorsChartLegendEl = document.createElement('div');
+
     if (myChart3) {
         // If chart already exists, destroy it before creating a new one:
         myChart3.destroy();
-    } 
+    }
 
     myChart3 = new Chart(
-        document.getElementById('chart3'),
+        collaboratorsChartEl,
         config
     );
-
-    const chart3LegendEl = document.getElementById('chart3legend');
 
     let html = '<details open=""><summary>Accounts most interacted with recently:</summary><ul>';
 
@@ -454,7 +496,13 @@ function drawChart3(myDataObj, username) {
 
     html += '</ul></details>';
 
-    chart3LegendEl.innerHTML = html;
+    collaboratorsChartLegendEl.innerHTML = html;
+
+    collaboratorsChartContainerEl.append(collaboratorsChartEl);
+
+    collaboratorsSectionEl.append(collaboratorsSectionHeadingEl);
+    collaboratorsSectionEl.append(collaboratorsChartContainerEl);
+    collaboratorsSectionEl.append(collaboratorsChartLegendEl);
 
 } // End of function drawChart3
 
@@ -464,9 +512,15 @@ let myChart1 = undefined;
 let myChart2 = undefined;
 let myChart3 = undefined;
 
-const resultsEl = document.querySelector('#results');
+
+const mainEl = document.querySelector('main');
 
 const formEl = document.querySelector('form');
+
+const profileEl = document.getElementById('profile');
+
+const starsEl = document.getElementById('stars');
+
 
 formEl.addEventListener('submit', (event) => {
 
@@ -483,7 +537,8 @@ formEl.addEventListener('submit', (event) => {
             if (response.status === 200) {
                 return response.json();
             } else {
-                resultsEl.innerHTML = `<p>Profile not found</p>`;
+                profileEl.innerHTML = `<p>Profile not found</p>`;
+                throw new Error("Profile not found!");
             }
         })
         .then((response) => {
@@ -496,10 +551,9 @@ formEl.addEventListener('submit', (event) => {
 <img src="${response['avatar_url']}">
 ${response['login']}
 </a>
-<h2>Starred projects:</h2>
 `;
 
-            resultsEl.innerHTML = html;
+            profileEl.innerHTML = html;
 
             // Starred projects:
             //response['starred_url']
@@ -509,17 +563,39 @@ ${response['login']}
                 })
                 .then((response) => {
                     //console.log(response);
+
+                    starsEl.innerHTML = '';
+
+                    const starsSectionHeadingEl = document.createElement('h2');
+                    starsSectionHeadingEl.innerHTML = 'Starred projects:';
+                    starsEl.append(starsSectionHeadingEl);
+
+                    const starsDetailsEl = document.createElement('details');
+                    starsDetailsEl.setAttribute('open', '');
+
+                    const starsDetailsSummaryEl = document.createElement('summary');
+                    starsDetailsSummaryEl.innerHTML = `⭐ ${response.length}`;
+                    starsDetailsEl.append(starsDetailsSummaryEl);
+
                     // An array of starred projects (length zero if none)
                     if (response.length === 0) {
-                        resultsEl.innerHTML += '<p>None</p>';
+                        // This isn't necessarily a good approach:
+                        starsDetailsEl.append(document.createElement('p').innerHTML = 'No starred projects. 🙁');
                     } else {
-                        let html = `<details open=""><summary>⭐ ${response.length}</summary><ul>`;
+                        const starsListEl = document.createElement('ul');
                         response.forEach((element) => {
                             // An array of objects for each starred project
-                            html += `<li><a href="${element['html_url']}">${element['name']}</a></li>`;
+                            const listItemEl = document.createElement('li');
+                            listItemEl.innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`;
+                            starsListEl.append(listItemEl);
+                            // Trying to do it in one go like this means that the HTML renders as text, for some reason:
+                            //starsListEl.append(document.createElement('li').innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`);
                         });
-                        resultsEl.innerHTML += html + '</ul></details>';
+                        starsDetailsEl.append(starsListEl);
                     }
+
+                    starsEl.append(starsDetailsEl);
+
                 });
 
 
