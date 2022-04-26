@@ -1,50 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
 
-    <title>Joe's GitHub profile analyser</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    -->
+        <title>Joe's GitHub profile analyser</title>
 
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+        <!--
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+        -->
 
-    <div id="everything">
+        <link rel="stylesheet" href="style.css">
 
-        <header>
-            <h1>Joe's GitHub profile analyser</h1>
-        </header>
+        <script src="secret.js"></script>
+        <script src="script.js" defer></script>
 
-        <main class="stack">
-            <section>
-                <form>
-                    <label>
-                        Username:
-                        <input type="text" name="username" value="joe-dev-public" autofocus>
-                    </label>
-                    <input type="submit" value="Submit">
-                </form>
-            </section>
-            <section id="profile"></section>
-            <section id="stars"></section>
-            <section id="activity"></section>
-            <section id="repos"></section>
-            <section id="collaborators"></section>
-        </main>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <footer>
-        </footer>
+    </head>
+    <body>
 
-    </div>
+        <div id="everything">
 
-</body>
+            <header>
+                <h1>Joe's GitHub profile analyser</h1>
+            </header>
+
+            <main class="stack">
+                <section>
+                    <form>
+                        <label>
+                            Username:
+                            <input type="text" name="username" value="joe-dev-public" autofocus>
+                        </label>
+                        <input type="submit" value="Submit">
+                    </form>
+                </section>
+                <section id="profile"></section>
+                <section id="stars"></section>
+                <section id="activity"></section>
+                <section id="repos"></section>
+                <section id="collaborators"></section>
+            </main>
+
+            <footer>
+            </footer>
+
+        </div>
+
+    </body>
 </html>

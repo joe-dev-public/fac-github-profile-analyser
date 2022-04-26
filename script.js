@@ -537,6 +537,20 @@ const profileEl = document.getElementById('profile');
 const starsEl = document.getElementById('stars');
 
 
+function myFetch(url) {
+    // If the OAuth2 PAT is defined, then authenticate with the API.
+    if (window.myToken !== undefined) {
+        return fetch(url, {
+            headers: {
+                'Authorization': `token ${window.myToken}`,
+            },
+        });
+    } else {
+        return fetch(url);
+    }
+}
+
+
 formEl.addEventListener('submit', (event) => {
 
     event.preventDefault();
@@ -547,7 +561,7 @@ formEl.addEventListener('submit', (event) => {
 
     const username = objFromFormData['username'];
 
-    fetch(`https://api.github.com/users/${username}`)
+    myFetch(`https://api.github.com/users/${username}`)
         .then((response) => {
             if (response.status === 200) {
                 return response.json();
@@ -572,7 +586,7 @@ ${response['login']}
 
             // Starred projects:
             //response['starred_url']
-            fetch(`https://api.github.com/users/${username}/starred`)
+            myFetch(`https://api.github.com/users/${username}/starred`)
                 .then((response) => {
                     return response.json();
                 })
@@ -621,7 +635,7 @@ ${response['login']}
                 Default to 1 month of events?
                 (How will this work - getting multiple pages?)
             */
-            fetch(`https://api.github.com/users/${username}/events?per_page=100`)
+            myFetch(`https://api.github.com/users/${username}/events?per_page=100`)
                 .then((response) => {
                     return response.json();
                 })
