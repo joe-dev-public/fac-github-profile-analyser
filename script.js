@@ -547,7 +547,11 @@ formEl.addEventListener('submit', (event) => {
 
     const username = objFromFormData['username'];
 
-    fetch(`https://api.github.com/users/${username}`)
+    fetch(`https://api.github.com/users/${username}`, {
+        headers: {
+            Authorization: `token ${token}`,
+        },
+    })
         .then((response) => {
             if (response.status === 200) {
                 return response.json();
@@ -572,7 +576,11 @@ ${response['login']}
 
             // Starred projects:
             //response['starred_url']
-            fetch(`https://api.github.com/users/${username}/starred`)
+            fetch(`https://api.github.com/users/${username}/starred`, {
+                headers: {
+                    Authorization: `token ${token}`,
+                },
+            })
                 .then((response) => {
                     return response.json();
                 })
@@ -621,7 +629,11 @@ ${response['login']}
                 Default to 1 month of events?
                 (How will this work - getting multiple pages?)
             */
-            fetch(`https://api.github.com/users/${username}/events?per_page=100`)
+            fetch(`https://api.github.com/users/${username}/events?per_page=100`, {
+                headers: {
+                    Authorization: `token ${token}`,
+                },
+            })
                 .then((response) => {
                     return response.json();
                 })
