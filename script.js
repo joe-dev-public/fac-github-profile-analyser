@@ -539,10 +539,10 @@ const starsEl = document.getElementById('stars');
 
 function myFetch(url) {
     // If the OAuth2 PAT is defined, then authenticate with the API.
-    if (token) {
+    if (window.myToken !== undefined) {
         return fetch(url, {
             headers: {
-                'Authorization': `token ${token}`,
+                'Authorization': `token ${window.myToken}`,
             },
         });
     } else {
