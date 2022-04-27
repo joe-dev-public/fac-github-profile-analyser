@@ -245,7 +245,7 @@ function displayRecentActivityData(myDataObj) {
         const idx = i % backgroundColours.length;
         //html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
         const activityTableRowEl = document.createElement('tr');
-        activityTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}</td><td>${myData[i]}</td>`;
+        activityTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};">${myLabels[i]}</td><td>${myData[i]}</td>`;
         activityTableEl.append(activityTableRowEl);
     }
 
