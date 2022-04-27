@@ -104,7 +104,7 @@ generateColourPalette();
 
 
 
-function drawChart(myDataObj) {
+function displayRecentActivityData(myDataObj) {
 
     /*  Take an object with labels: numbers.
     */
@@ -249,7 +249,7 @@ function drawChart(myDataObj) {
     activitySectionEl.append(activityChartContainerEl);
     activitySectionEl.append(activityChartLegendEl);
 
-} // End of function drawChart
+} // End of function displayRecentActivityData
 
 
 
@@ -737,7 +737,7 @@ ${response['login']}
 
                     //console.log(countRepoEvents);
 
-                    drawChart(countEventTypes);
+                    displayRecentActivityData(countEventTypes);
                     drawChart2(countRepoEvents);
                     drawChart3(countRepoEvents, username);
 
