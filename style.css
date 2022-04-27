@@ -65,7 +65,7 @@ table {
 }
 
 td {
-    padding-left: 0.5rem;
+    padding: 0.25rem 0.5rem;
 }
 
 tr:nth-child(2n) > td {
