@@ -4,6 +4,11 @@
     line-height: 1.5;
 }
 
+:root {
+    --lightest-grey: hsl(0, 0%, 95%);
+    --light-grey: hsl(0, 0%, 90%);
+}
+
 #everything {
     margin: 0 auto;
     max-width: 42rem;
@@ -19,7 +24,7 @@ img {
 }
 
 details {
-    background-color: hsl(0, 0%, 95%);
+    background-color: var(--lightest-grey);
     border-radius: 0.25rem;
 }
 
@@ -31,7 +36,7 @@ summary {
 }
 
 summary:hover {
-    background-color: hsl(0, 0%, 90%);
+    background-color: var(--light-grey);
 }
 
 details > ul {
@@ -53,4 +58,20 @@ details > ul {
     color:hsl(0, 0%, 30%);
     font-size: 0.85rem;
     font-weight: bold;
+} */
+
+table {
+    border-spacing: 0;
+}
+
+td {
+    padding: 0.25rem 0.5rem;
+}
+
+tr:nth-child(2n) > td {
+    background-color: var(--light-grey);
+}
+
+/* table > * + * > td {
+    border-top: 1px solid red;
 } */
