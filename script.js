@@ -235,23 +235,17 @@ function displayRecentActivityData(myDataObj) {
     const activityDetailsEl = document.createElement('details');
     activityDetailsEl.setAttribute('open', '');
     const activityDetailsSummaryEl = document.createElement('summary');
+
     activityDetailsSummaryEl.innerHTML = 'Types of recent activity:';
 
     const activityTableEl = document.createElement('table');
 
-    // let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
-
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
-        //html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
         const activityTableRowEl = document.createElement('tr');
         activityTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};">${myLabels[i]}</td><td>${myData[i]}</td>`;
         activityTableEl.append(activityTableRowEl);
     }
-
-    // html += '</ul></details>';
-
-    // activityChartLegendEl.innerHTML = html;
 
     activityDetailsEl.append(activityDetailsSummaryEl);
     activityDetailsEl.append(activityTableEl);
@@ -268,7 +262,7 @@ function displayRecentActivityData(myDataObj) {
 
 
 
-function drawChart2(myDataObj) {
+function displayRecentReposData(myDataObj) {
 
     const myLabels = [];
     const myData = [];
@@ -392,11 +386,11 @@ function drawChart2(myDataObj) {
     reposSectionEl.append(reposChartContainerEl);
     reposSectionEl.append(reposChartLegendEl);
 
-} // End of function drawChart2
+} // End of function displayRecentReposData
 
 
 
-function drawChart3(myDataObj, username) {
+function displayRecentCollaboratorsData(myDataObj, username) {
 
     const myLabels = [];
     const myData = [];
@@ -534,7 +528,7 @@ function drawChart3(myDataObj, username) {
     collaboratorsSectionEl.append(collaboratorsChartContainerEl);
     collaboratorsSectionEl.append(collaboratorsChartLegendEl);
 
-} // End of function drawChart3
+} // End of function displayRecentCollaboratorsData
 
 
 
@@ -753,8 +747,8 @@ ${response['login']}
                     //console.log(countRepoEvents);
 
                     displayRecentActivityData(countEventTypes);
-                    drawChart2(countRepoEvents);
-                    drawChart3(countRepoEvents, username);
+                    displayRecentReposData(countRepoEvents);
+                    displayRecentCollaboratorsData(countRepoEvents, username);
 
                 });
 
