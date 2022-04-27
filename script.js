@@ -232,16 +232,31 @@ function displayRecentActivityData(myDataObj) {
         config
     );
 
-    let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
+    const activityDetailsEl = document.createElement('details');
+    activityDetailsEl.setAttribute('open', '');
+    const activityDetailsSummaryEl = document.createElement('summary');
+    activityDetailsSummaryEl.innerHTML = 'Types of recent activity:';
+
+    const activityTableEl = document.createElement('table');
+
+    // let html = '<details open=""><summary>Types of recent activity:</summary><ul>';
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
+        //html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}: ${myData[i]}</li>`;
+        const activityTableRowEl = document.createElement('tr');
+        activityTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;">${myLabels[i]}</td><td>${myData[i]}</td>`;
+        activityTableEl.append(activityTableRowEl);
     }
 
-    html += '</ul></details>';
+    // html += '</ul></details>';
 
-    activityChartLegendEl.innerHTML = html;
+    // activityChartLegendEl.innerHTML = html;
+
+    activityDetailsEl.append(activityDetailsSummaryEl);
+    activityDetailsEl.append(activityTableEl);
+
+    activityChartLegendEl.append(activityDetailsEl);
 
     activityChartContainerEl.append(activityChartEl);
 
