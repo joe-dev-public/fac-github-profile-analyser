@@ -368,17 +368,29 @@ function displayRecentReposData(myDataObj) {
         config
     );
 
-    let html = '<details open=""><summary>Repos most interacted with recently:</summary><ul>';
+    const reposDetailsEl = document.createElement('details');
+    reposDetailsEl.setAttribute('open', '');
+    const reposDetailsSummaryEl = document.createElement('summary');
+
+    reposDetailsSummaryEl.innerHTML = 'Repos most interacted with recently:';
+
+    const reposTableEl = document.createElement('table');
 
     for (let i = 0; i < myLabels.length; i++) {
         // I spent *way* too much time trying to work this out. You just need the remainder!
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
+        //html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
+
+        const reposTableRowEl = document.createElement('tr');
+        reposTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a></td><td>${myData[i]}</td>`;
+        reposTableEl.append(reposTableRowEl);
+
     }
 
-    html += '</ul></details>';
+    reposDetailsEl.append(reposDetailsSummaryEl);
+    reposDetailsEl.append(reposTableEl);
 
-    reposChartLegendEl.innerHTML = html;
+    reposChartLegendEl.append(reposDetailsEl);
 
     reposChartContainerEl.append(reposChartEl);
 
@@ -507,20 +519,38 @@ function displayRecentCollaboratorsData(myDataObj, username) {
         config
     );
 
-    let html = '<details open=""><summary>Accounts most interacted with recently:</summary><ul>';
+    const collaboratorsDetailsEl = document.createElement('details');
+    collaboratorsDetailsEl.setAttribute('open', '');
+    const collaboratorsDetailsSummaryEl = document.createElement('summary');
+
+    collaboratorsDetailsSummaryEl.innerHTML = 'Accounts most interacted with recently:';
+
+    const collaboratorsTableEl = document.createElement('table');
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
-        html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">`;
-        //if (myLabels[i] === username) { html += `*`; }
-        html += `${myLabels[i]}</a>: ${myData[i]}`;
+        const collaboratorsTableRowEl = document.createElement('tr');
+
+        let html = `
+<td style="border-left: 2rem solid ${backgroundColours[idx]};">
+    <a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>
+</td>
+<td>
+    ${myData[i]}
+`;
+
         if (myLabels[i] === username) { html += ` <em><!-- &larr;  -->(this is the user you searched for)</em>`; }
-        html += `</li>`;
+        html += `</td>`;
+
+        collaboratorsTableRowEl.innerHTML = html;
+        collaboratorsTableEl.append(collaboratorsTableRowEl);
+
     }
 
-    html += '</ul></details>';
+    collaboratorsDetailsEl.append(collaboratorsDetailsSummaryEl);
+    collaboratorsDetailsEl.append(collaboratorsTableEl);
 
-    collaboratorsChartLegendEl.innerHTML = html;
+    collaboratorsChartLegendEl.append(collaboratorsDetailsEl);
 
     collaboratorsChartContainerEl.append(collaboratorsChartEl);
 
