@@ -9,6 +9,25 @@
     --light-grey: hsl(0, 0%, 90%);
 }
 
+h1 {
+    /* For me in Firefox: default 32px = 2rem */
+    font-size: 1.75rem;
+}
+
+h2 {
+    /*  For me in Firefox: computed default for h2 is 24px.
+        32/24 = 0.75
+        0.75 * 2rem = 1.5rem
+        (And yes, manually setting 1.5rem gives 24px.)
+        I arbitrarily reduced h1 to 1.75rem, and
+        1.75 / 2 = 0.875
+        0.875 * 1.5rem = 1.3125rem
+        (This gives h2 a size of 21px, and 21/28 = 0.75, so the ratio between h1 and h2
+        is maintained)
+    */
+    font-size: 1.3125rem;
+}
+
 #everything {
     margin: 0 auto;
     max-width: 42rem;
