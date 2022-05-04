@@ -99,6 +99,7 @@ details > ul {
 } */
 
 .legend-container h3 {
+    font-weight: 400;
     margin-top: 0;
 }
 

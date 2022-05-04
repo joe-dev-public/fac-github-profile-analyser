@@ -235,6 +235,22 @@ function displayRecentActivityData(myDataObj) {
 
     const activityTableEl = document.createElement('table');
 
+    // Todo: table headers. If you want.
+    /*
+    const activityTableHeader = document.createElement('thead');
+
+    activityTableHeader.innerHTML = `
+<tr>
+  <td style="border-left: 2rem solid transparent;">
+    Event type
+  </td>
+  <td>No.</td>
+</tr>
+`;
+
+    activityTableEl.append(activityTableHeader);
+    */
+
     if (myChart1) {
         // If chart already exists, destroy it before creating a new one:
         myChart1.destroy();
