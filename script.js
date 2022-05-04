@@ -211,16 +211,45 @@ function displayRecentActivityData(myDataObj) {
     //Chart.defaults.font.size = 16;
 
     const activitySectionEl = document.getElementById('activity');
-
     activitySectionEl.innerHTML = '';
 
     const activitySectionHeadingEl = document.createElement('h2');
-    activitySectionHeadingEl.innerText = 'Recent activity:';
+    activitySectionHeadingEl.innerText = 'Recent activity';
 
     const activityChartContainerEl = document.createElement('div');
     activityChartContainerEl.classList.add('chart-container');
     const activityChartEl = document.createElement('canvas');
-    const activityChartLegendEl = document.createElement('div');
+
+    const activityDetailsEl = document.createElement('details');
+    activityDetailsEl.setAttribute('open', '');
+    const activityDetailsSummaryEl = document.createElement('summary');
+
+    const activityDetailsContainer = document.createElement('div');
+    activityDetailsContainer.classList.add('row');
+
+    const activityLegendContainer = document.createElement('div');
+    activityLegendContainer.classList.add('legend-container');
+
+    const activityLegendHeading = document.createElement('h3');
+    activityLegendHeading.innerHTML = 'Types of recent activity:';
+
+    const activityTableEl = document.createElement('table');
+
+    // Todo: table headers. If you want.
+    /*
+    const activityTableHeader = document.createElement('thead');
+
+    activityTableHeader.innerHTML = `
+<tr>
+  <td style="border-left: 2rem solid transparent;">
+    Event type
+  </td>
+  <td>No.</td>
+</tr>
+`;
+
+    activityTableEl.append(activityTableHeader);
+    */
 
     if (myChart1) {
         // If chart already exists, destroy it before creating a new one:
@@ -232,13 +261,17 @@ function displayRecentActivityData(myDataObj) {
         config
     );
 
-    const activityDetailsEl = document.createElement('details');
-    activityDetailsEl.setAttribute('open', '');
-    const activityDetailsSummaryEl = document.createElement('summary');
-
-    activityDetailsSummaryEl.innerHTML = 'Types of recent activity:';
-
-    const activityTableEl = document.createElement('table');
+    /*  Todo: you could link to GitHub's API docs to explain what each kind of event is.
+        e.g.:
+        - https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#pushevent
+            - "One or more commits are pushed to a repository branch or tag."
+        - https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#issuesevent
+            - "Activity related to an issue."
+        - https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#createevent
+            - "A Git branch or tag is created."
+        - etc.
+        But they're all pretty self-explanatory, so.. not urgent!
+    */
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
@@ -247,16 +280,21 @@ function displayRecentActivityData(myDataObj) {
         activityTableEl.append(activityTableRowEl);
     }
 
-    activityDetailsEl.append(activityDetailsSummaryEl);
-    activityDetailsEl.append(activityTableEl);
+    activityDetailsSummaryEl.append(activitySectionHeadingEl);
 
-    activityChartLegendEl.append(activityDetailsEl);
+    activityDetailsEl.append(activityDetailsSummaryEl);
 
     activityChartContainerEl.append(activityChartEl);
 
-    activitySectionEl.append(activitySectionHeadingEl);
-    activitySectionEl.append(activityChartContainerEl);
-    activitySectionEl.append(activityChartLegendEl);
+    activityLegendContainer.append(activityLegendHeading);
+    activityLegendContainer.append(activityTableEl);
+
+    activityDetailsContainer.append(activityChartContainerEl);
+    activityDetailsContainer.append(activityLegendContainer);
+
+    activityDetailsEl.append(activityDetailsContainer);
+
+    activitySectionEl.append(activityDetailsEl);
 
 } // End of function displayRecentActivityData
 
@@ -352,12 +390,26 @@ function displayRecentReposData(myDataObj) {
     reposSectionEl.innerHTML = '';
 
     const reposSectionHeadingEl = document.createElement('h2');
-    reposSectionHeadingEl.innerText = 'Most popular repos:';
+    reposSectionHeadingEl.innerText = 'Most popular repos';
 
     const reposChartContainerEl = document.createElement('div');
     reposChartContainerEl.classList.add('chart-container');
     const reposChartEl = document.createElement('canvas');
-    const reposChartLegendEl = document.createElement('div');
+
+    const reposDetailsEl = document.createElement('details');
+    reposDetailsEl.setAttribute('open', '');
+    const reposDetailsSummaryEl = document.createElement('summary');
+
+    const reposDetailsContainer = document.createElement('div');
+    reposDetailsContainer.classList.add('row');
+
+    const reposLegendContainer = document.createElement('div');
+    reposLegendContainer.classList.add('legend-container');
+
+    const reposLegendHeading = document.createElement('h3');
+    reposLegendHeading.innerHTML = 'Repos most interacted with recently:';
+
+    const reposTableEl = document.createElement('table');
 
     if (myChart2) {
         myChart2.destroy();
@@ -367,14 +419,6 @@ function displayRecentReposData(myDataObj) {
         reposChartEl,
         config
     );
-
-    const reposDetailsEl = document.createElement('details');
-    reposDetailsEl.setAttribute('open', '');
-    const reposDetailsSummaryEl = document.createElement('summary');
-
-    reposDetailsSummaryEl.innerHTML = 'Repos most interacted with recently:';
-
-    const reposTableEl = document.createElement('table');
 
     for (let i = 0; i < myLabels.length; i++) {
         // I spent *way* too much time trying to work this out. You just need the remainder!
@@ -387,16 +431,21 @@ function displayRecentReposData(myDataObj) {
 
     }
 
-    reposDetailsEl.append(reposDetailsSummaryEl);
-    reposDetailsEl.append(reposTableEl);
+    reposDetailsSummaryEl.append(reposSectionHeadingEl);
 
-    reposChartLegendEl.append(reposDetailsEl);
+    reposDetailsEl.append(reposDetailsSummaryEl);
 
     reposChartContainerEl.append(reposChartEl);
 
-    reposSectionEl.append(reposSectionHeadingEl);
-    reposSectionEl.append(reposChartContainerEl);
-    reposSectionEl.append(reposChartLegendEl);
+    reposLegendContainer.append(reposLegendHeading);
+    reposLegendContainer.append(reposTableEl);
+
+    reposDetailsContainer.append(reposChartContainerEl);
+    reposDetailsContainer.append(reposLegendContainer);
+
+    reposDetailsEl.append(reposDetailsContainer);
+
+    reposSectionEl.append(reposDetailsEl);
 
 } // End of function displayRecentReposData
 
@@ -502,12 +551,26 @@ function displayRecentCollaboratorsData(myDataObj, username) {
     collaboratorsSectionEl.innerHTML = '';
 
     const collaboratorsSectionHeadingEl = document.createElement('h2');
-    collaboratorsSectionHeadingEl.innerText = 'Top collaborators:';
+    collaboratorsSectionHeadingEl.innerText = 'Top collaborators';
 
     const collaboratorsChartContainerEl = document.createElement('div');
     collaboratorsChartContainerEl.classList.add('chart-container');
     const collaboratorsChartEl = document.createElement('canvas');
-    const collaboratorsChartLegendEl = document.createElement('div');
+
+    const collaboratorsDetailsEl = document.createElement('details');
+    collaboratorsDetailsEl.setAttribute('open', '');
+    const collaboratorsDetailsSummaryEl = document.createElement('summary');
+
+    const collaboratorsDetailsContainer = document.createElement('div');
+    collaboratorsDetailsContainer.classList.add('row');
+
+    const collaboratorsLegendContainer = document.createElement('div');
+    collaboratorsLegendContainer.classList.add('legend-container');
+
+    const collaboratorsLegendHeading = document.createElement('h3');
+    collaboratorsLegendHeading.innerHTML = 'Accounts most interacted with recently:';
+
+    const collaboratorsTableEl = document.createElement('table');
 
     if (myChart3) {
         // If chart already exists, destroy it before creating a new one:
@@ -518,14 +581,6 @@ function displayRecentCollaboratorsData(myDataObj, username) {
         collaboratorsChartEl,
         config
     );
-
-    const collaboratorsDetailsEl = document.createElement('details');
-    collaboratorsDetailsEl.setAttribute('open', '');
-    const collaboratorsDetailsSummaryEl = document.createElement('summary');
-
-    collaboratorsDetailsSummaryEl.innerHTML = 'Accounts most interacted with recently:';
-
-    const collaboratorsTableEl = document.createElement('table');
 
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
@@ -547,16 +602,21 @@ function displayRecentCollaboratorsData(myDataObj, username) {
 
     }
 
-    collaboratorsDetailsEl.append(collaboratorsDetailsSummaryEl);
-    collaboratorsDetailsEl.append(collaboratorsTableEl);
+    collaboratorsDetailsSummaryEl.append(collaboratorsSectionHeadingEl);
 
-    collaboratorsChartLegendEl.append(collaboratorsDetailsEl);
+    collaboratorsDetailsEl.append(collaboratorsDetailsSummaryEl);
 
     collaboratorsChartContainerEl.append(collaboratorsChartEl);
 
-    collaboratorsSectionEl.append(collaboratorsSectionHeadingEl);
-    collaboratorsSectionEl.append(collaboratorsChartContainerEl);
-    collaboratorsSectionEl.append(collaboratorsChartLegendEl);
+    collaboratorsLegendContainer.append(collaboratorsLegendHeading);
+    collaboratorsLegendContainer.append(collaboratorsTableEl);
+
+    collaboratorsDetailsContainer.append(collaboratorsChartContainerEl);
+    collaboratorsDetailsContainer.append(collaboratorsLegendContainer);
+
+    collaboratorsDetailsEl.append(collaboratorsDetailsContainer);
+
+    collaboratorsSectionEl.append(collaboratorsDetailsEl);
 
 } // End of function displayRecentCollaboratorsData
 
@@ -634,15 +694,14 @@ ${response['login']}
 
                     starsEl.innerHTML = '';
 
-                    const starsSectionHeadingEl = document.createElement('h2');
-                    starsSectionHeadingEl.innerHTML = 'Starred projects:';
-                    starsEl.append(starsSectionHeadingEl);
-
                     const starsDetailsEl = document.createElement('details');
                     starsDetailsEl.setAttribute('open', '');
 
                     const starsDetailsSummaryEl = document.createElement('summary');
-                    starsDetailsSummaryEl.innerHTML = `⭐ ${response.length}`;
+                    const starsSectionHeadingEl = document.createElement('h2');
+                    starsSectionHeadingEl.innerHTML = `Starred projects: ⭐ ${response.length}`;
+
+                    starsDetailsSummaryEl.append(starsSectionHeadingEl);
                     starsDetailsEl.append(starsDetailsSummaryEl);
 
                     // An array of starred projects (length zero if none)
