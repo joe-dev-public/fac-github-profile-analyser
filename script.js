@@ -104,6 +104,44 @@ generateColourPalette();
 
 
 
+function clearAllOutputs() {
+
+    profileSectionEl.innerHTML = '';
+    starsSectionEl.innerHTML = '';
+    activitySectionEl.innerHTML = '';
+    reposSectionEl.innerHTML = '';
+    collaboratorsSectionEl.innerHTML = '';
+
+}
+
+
+function myError(message, reason = '') {
+
+    clearAllOutputs;
+
+    const errorHeading = document.createElement('h2');
+    errorHeading.innerHTML = 'Error';
+
+    const errorMessage = document.createElement('p');
+    errorMessage.innerHTML = message;
+
+    profileSectionEl.append(errorHeading);
+    profileSectionEl.append(errorMessage);
+
+    if (reason !== '') {
+        const errorReason = document.createElement('p');
+        errorReason.classList.add('error-reason');
+        errorReason.innerHTML = reason;
+        profileSectionEl.append(errorReason);
+    }
+
+    //throw new Error(message);
+
+}
+// End of function myError
+
+
+
 function displayRecentActivityData(myDataObj) {
 
     /*  Take an object with labels: numbers.
@@ -209,9 +247,6 @@ function displayRecentActivityData(myDataObj) {
 
     // Make the text a bit bigger:
     //Chart.defaults.font.size = 16;
-
-    const activitySectionEl = document.getElementById('activity');
-    activitySectionEl.innerHTML = '';
 
     const activitySectionHeadingEl = document.createElement('h2');
     activitySectionHeadingEl.innerText = 'Recent activity';
@@ -385,10 +420,6 @@ function displayRecentReposData(myDataObj) {
         },
     };
 
-    const reposSectionEl = document.getElementById('repos');
-
-    reposSectionEl.innerHTML = '';
-
     const reposSectionHeadingEl = document.createElement('h2');
     reposSectionHeadingEl.innerText = 'Most popular repos';
 
@@ -546,10 +577,6 @@ function displayRecentCollaboratorsData(myDataObj, username) {
         },
     };
 
-    const collaboratorsSectionEl = document.getElementById('collaborators');
-
-    collaboratorsSectionEl.innerHTML = '';
-
     const collaboratorsSectionHeadingEl = document.createElement('h2');
     collaboratorsSectionHeadingEl.innerText = 'Top collaborators';
 
@@ -635,7 +662,7 @@ ${response['login']}
 </a>
 `;
 
-    profileEl.innerHTML = html;
+    profileSectionEl.innerHTML = html;
 
 }
 // End of function handleUsersFetch
@@ -646,7 +673,7 @@ function handleStarredFetch(response) {
 
     //console.log(response);
 
-    starsEl.innerHTML = '';
+    starsSectionEl.innerHTML = '';
 
     const starsDetailsEl = document.createElement('details');
     starsDetailsEl.setAttribute('open', '');
@@ -675,7 +702,7 @@ function handleStarredFetch(response) {
         starsDetailsEl.append(starsListEl);
     }
 
-    starsEl.append(starsDetailsEl);
+    starsSectionEl.append(starsDetailsEl);
 
 }
 // End of function handleStarredFetch
@@ -799,9 +826,12 @@ const mainEl = document.querySelector('main');
 
 const formEl = document.querySelector('form');
 
-const profileEl = document.getElementById('profile');
+const profileSectionEl = document.getElementById('profile');
+const starsSectionEl = document.getElementById('stars');
+const activitySectionEl = document.getElementById('activity');
+const reposSectionEl = document.getElementById('repos');
+const collaboratorsSectionEl = document.getElementById('collaborators');
 
-const starsEl = document.getElementById('stars');
 
 
 function myFetch(url) {
@@ -822,6 +852,8 @@ formEl.addEventListener('submit', (event) => {
 
     event.preventDefault();
 
+    clearAllOutputs();
+
     const myFormData = new FormData(formEl);
 
     const objFromFormData = Object.fromEntries(myFormData);
@@ -830,11 +862,13 @@ formEl.addEventListener('submit', (event) => {
 
     myFetch(`https://api.github.com/users/${username}`)
         .then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                profileEl.innerHTML = `<p>Profile not found</p>`;
-                throw new Error("Profile not found!");
+            switch (response.status) {
+                case 200:
+                    return response.json();
+                case 404:
+                    throw new Error('Profile not found.');
+                default:
+                    throw new Error(`${response['status']}: ${response['statusText']}`);
             }
         })
         .then((response) => {
@@ -869,8 +903,10 @@ formEl.addEventListener('submit', (event) => {
 
         })
         .catch((reason) => {
-            console.log("Catch");
-            console.log(reason);
+            // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_that_the_fetch_was_successful
+            // If the promise doesn't resolve, there's a problem with the fetch.
+            // (Most likely a network thing? That's probably all I'll test.)
+            myError(reason);
         });
 
 });
