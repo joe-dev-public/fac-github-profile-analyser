@@ -622,7 +622,67 @@ function displayRecentCollaboratorsData(myDataObj, username) {
 
 
 
-function handleEventFetch(username, response) {
+function handleUsersFetch(response) {
+
+    //console.log(response);
+
+    const id = response['id'];
+
+    let html = `
+<a href="${response['html_url']}">
+<img src="${response['avatar_url']}">
+${response['login']}
+</a>
+`;
+
+    profileEl.innerHTML = html;
+
+}
+// End of function handleUsersFetch
+
+
+
+function handleStarredFetch(response) {
+
+    //console.log(response);
+
+    starsEl.innerHTML = '';
+
+    const starsDetailsEl = document.createElement('details');
+    starsDetailsEl.setAttribute('open', '');
+
+    const starsDetailsSummaryEl = document.createElement('summary');
+    const starsSectionHeadingEl = document.createElement('h2');
+    starsSectionHeadingEl.innerHTML = `Starred projects: ⭐ ${response.length}`;
+
+    starsDetailsSummaryEl.append(starsSectionHeadingEl);
+    starsDetailsEl.append(starsDetailsSummaryEl);
+
+    // An array of starred projects (length zero if none)
+    if (response.length === 0) {
+        // This isn't necessarily a good approach:
+        starsDetailsEl.append(document.createElement('p').innerHTML = 'No starred projects. 🙁');
+    } else {
+        const starsListEl = document.createElement('ul');
+        response.forEach((element) => {
+            // An array of objects for each starred project
+            const listItemEl = document.createElement('li');
+            listItemEl.innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`;
+            starsListEl.append(listItemEl);
+            // Trying to do it in one go like this means that the HTML renders as text, for some reason:
+            //starsListEl.append(document.createElement('li').innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`);
+        });
+        starsDetailsEl.append(starsListEl);
+    }
+
+    starsEl.append(starsDetailsEl);
+
+}
+// End of function handleStarredFetch
+
+
+
+function handleEventsFetch(username, response) {
 
     //console.log(response);
     /*
@@ -726,7 +786,7 @@ function handleEventFetch(username, response) {
     displayRecentCollaboratorsData(countRepoEvents, username);
 
 }
-// End of function handleEventFetch
+// End of function handleEventsFetch
 
 
 
@@ -778,18 +838,8 @@ formEl.addEventListener('submit', (event) => {
             }
         })
         .then((response) => {
-            //console.log(response);
 
-            const id = response['id'];
-
-            let html = `
-<a href="${response['html_url']}">
-<img src="${response['avatar_url']}">
-${response['login']}
-</a>
-`;
-
-            profileEl.innerHTML = html;
+            handleUsersFetch(response);
 
             // Starred projects:
             //response['starred_url']
@@ -798,39 +848,7 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    //console.log(response);
-
-                    starsEl.innerHTML = '';
-
-                    const starsDetailsEl = document.createElement('details');
-                    starsDetailsEl.setAttribute('open', '');
-
-                    const starsDetailsSummaryEl = document.createElement('summary');
-                    const starsSectionHeadingEl = document.createElement('h2');
-                    starsSectionHeadingEl.innerHTML = `Starred projects: ⭐ ${response.length}`;
-
-                    starsDetailsSummaryEl.append(starsSectionHeadingEl);
-                    starsDetailsEl.append(starsDetailsSummaryEl);
-
-                    // An array of starred projects (length zero if none)
-                    if (response.length === 0) {
-                        // This isn't necessarily a good approach:
-                        starsDetailsEl.append(document.createElement('p').innerHTML = 'No starred projects. 🙁');
-                    } else {
-                        const starsListEl = document.createElement('ul');
-                        response.forEach((element) => {
-                            // An array of objects for each starred project
-                            const listItemEl = document.createElement('li');
-                            listItemEl.innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`;
-                            starsListEl.append(listItemEl);
-                            // Trying to do it in one go like this means that the HTML renders as text, for some reason:
-                            //starsListEl.append(document.createElement('li').innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`);
-                        });
-                        starsDetailsEl.append(starsListEl);
-                    }
-
-                    starsEl.append(starsDetailsEl);
-
+                    handleStarredFetch(response);
                 });
 
 
@@ -846,7 +864,7 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    handleEventFetch(username, response);
+                    handleEventsFetch(username, response);
                 });
 
         })
