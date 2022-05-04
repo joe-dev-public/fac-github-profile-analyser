@@ -33,13 +33,17 @@ h2 {
     max-width: 42rem;
 }
 
+input {
+    margin-left: 0.5rem;
+}
+
 img {
     margin-right: 0.5rem;
     max-width: 8rem;
 }
 
 .stack > * + * {
-    margin-top: 5rem;
+    margin-top: 3.5rem;
 }
 
 details {
@@ -100,3 +104,9 @@ tr:nth-child(2n) > td {
 /* table > * + * > td {
     border-top: 1px solid red;
 } */
+
+footer {
+    border-top: 1px solid var(--light-grey);
+    margin-top: 3.5rem;
+    padding-top: 1rem;
+}
