@@ -8,6 +8,7 @@
     --lightest-grey: hsl(0, 0%, 98%);
     --lighter-grey: hsl(0, 0%, 95%);
     --light-grey: hsl(0, 0%, 90%);
+    --dark-grey: hsl(0, 0%, 65%);
 }
 
 h1 {
@@ -47,10 +48,16 @@ img {
     margin-top: 3.5rem;
 }
 
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 details {
     background-color: var(--lighter-grey);
     border-radius: 0.25rem;
-    filter: drop-shadow(0 0.25rem 0.25rem var(--light-grey));
+    filter: drop-shadow(0 0.25rem 0.25rem var(--dark-grey));
     padding: 0.5rem;
 }
 
@@ -66,7 +73,8 @@ summary {
 } */
 
 summary > h2 {
-    display: inline;
+    display: inline-block;
+    margin-top: 0;
 }
 
 details > ul {
@@ -80,15 +88,19 @@ details > ul {
     margin-right: 0.75rem;
 }
 
-.chart-container {
+/* .chart-container {
     margin-bottom: 1rem;
-}
+} */
 
 /* li > em {
     color:hsl(0, 0%, 30%);
     font-size: 0.85rem;
     font-weight: bold;
 } */
+
+.legend-container h3 {
+    margin-top: 0;
+}
 
 table {
     border-spacing: 0;
