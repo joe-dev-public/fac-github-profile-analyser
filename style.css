@@ -45,6 +45,8 @@ img {
 details {
     background-color: var(--lightest-grey);
     border-radius: 0.25rem;
+    filter: drop-shadow(0 0.25rem 0.25rem var(--light-grey));
+    padding: 0.5rem;
 }
 
 summary {
@@ -58,10 +60,14 @@ summary:hover {
     background-color: var(--light-grey);
 }
 
+summary > h2 {
+    display: inline;
+}
+
 details > ul {
     list-style-type: none;
-    margin: 0.75rem 0 0 1rem;
-    padding: 0 0 1rem 0;
+    margin: 0;
+    padding: 0;
 }
 
 #stars > details > ul > li {

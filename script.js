@@ -634,15 +634,14 @@ ${response['login']}
 
                     starsEl.innerHTML = '';
 
-                    const starsSectionHeadingEl = document.createElement('h2');
-                    starsSectionHeadingEl.innerHTML = 'Starred projects:';
-                    starsEl.append(starsSectionHeadingEl);
-
                     const starsDetailsEl = document.createElement('details');
                     starsDetailsEl.setAttribute('open', '');
 
                     const starsDetailsSummaryEl = document.createElement('summary');
-                    starsDetailsSummaryEl.innerHTML = `⭐ ${response.length}`;
+                    const starsSectionHeadingEl = document.createElement('h2');
+                    starsSectionHeadingEl.innerHTML = `Starred projects: ⭐ ${response.length}`;
+
+                    starsDetailsSummaryEl.append(starsSectionHeadingEl);
                     starsDetailsEl.append(starsDetailsSummaryEl);
 
                     // An array of starred projects (length zero if none)
