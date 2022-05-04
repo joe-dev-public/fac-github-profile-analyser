@@ -220,7 +220,7 @@ function displayRecentActivityData(myDataObj) {
     const activityChartContainerEl = document.createElement('div');
     activityChartContainerEl.classList.add('chart-container');
     const activityChartEl = document.createElement('canvas');
-    const activityChartLegendEl = document.createElement('div');
+    //const activityChartLegendEl = document.createElement('div');
 
     if (myChart1) {
         // If chart already exists, destroy it before creating a new one:
@@ -236,7 +236,8 @@ function displayRecentActivityData(myDataObj) {
     activityDetailsEl.setAttribute('open', '');
     const activityDetailsSummaryEl = document.createElement('summary');
 
-    activityDetailsSummaryEl.innerHTML = 'Types of recent activity:';
+    //activityDetailsSummaryEl.innerHTML = 'Types of recent activity:';
+    activityDetailsSummaryEl.append(activitySectionHeadingEl);
 
     const activityTableEl = document.createElement('table');
 
@@ -248,15 +249,17 @@ function displayRecentActivityData(myDataObj) {
     }
 
     activityDetailsEl.append(activityDetailsSummaryEl);
+    activityDetailsEl.append(activityChartContainerEl);
+
     activityDetailsEl.append(activityTableEl);
 
-    activityChartLegendEl.append(activityDetailsEl);
+    //activityChartLegendEl.append(activityDetailsEl);
 
     activityChartContainerEl.append(activityChartEl);
 
-    activitySectionEl.append(activitySectionHeadingEl);
-    activitySectionEl.append(activityChartContainerEl);
-    activitySectionEl.append(activityChartLegendEl);
+    //activitySectionEl.append(activitySectionHeadingEl);
+    //activitySectionEl.append(activityChartContainerEl);
+    activitySectionEl.append(activityDetailsEl);
 
 } // End of function displayRecentActivityData
 
@@ -357,7 +360,7 @@ function displayRecentReposData(myDataObj) {
     const reposChartContainerEl = document.createElement('div');
     reposChartContainerEl.classList.add('chart-container');
     const reposChartEl = document.createElement('canvas');
-    const reposChartLegendEl = document.createElement('div');
+    //const reposChartLegendEl = document.createElement('div');
 
     if (myChart2) {
         myChart2.destroy();
@@ -372,7 +375,8 @@ function displayRecentReposData(myDataObj) {
     reposDetailsEl.setAttribute('open', '');
     const reposDetailsSummaryEl = document.createElement('summary');
 
-    reposDetailsSummaryEl.innerHTML = 'Repos most interacted with recently:';
+    //reposDetailsSummaryEl.innerHTML = 'Repos most interacted with recently:';
+    reposDetailsSummaryEl.append(reposSectionHeadingEl);
 
     const reposTableEl = document.createElement('table');
 
@@ -388,15 +392,17 @@ function displayRecentReposData(myDataObj) {
     }
 
     reposDetailsEl.append(reposDetailsSummaryEl);
+    reposDetailsEl.append(reposChartContainerEl);
+
     reposDetailsEl.append(reposTableEl);
 
-    reposChartLegendEl.append(reposDetailsEl);
+    //reposChartLegendEl.append(reposDetailsEl);
 
     reposChartContainerEl.append(reposChartEl);
 
-    reposSectionEl.append(reposSectionHeadingEl);
-    reposSectionEl.append(reposChartContainerEl);
-    reposSectionEl.append(reposChartLegendEl);
+    //reposSectionEl.append(reposSectionHeadingEl);
+    //reposSectionEl.append(reposChartContainerEl);
+    reposSectionEl.append(reposDetailsEl);
 
 } // End of function displayRecentReposData
 
@@ -507,7 +513,7 @@ function displayRecentCollaboratorsData(myDataObj, username) {
     const collaboratorsChartContainerEl = document.createElement('div');
     collaboratorsChartContainerEl.classList.add('chart-container');
     const collaboratorsChartEl = document.createElement('canvas');
-    const collaboratorsChartLegendEl = document.createElement('div');
+    //const collaboratorsChartLegendEl = document.createElement('div');
 
     if (myChart3) {
         // If chart already exists, destroy it before creating a new one:
@@ -523,7 +529,8 @@ function displayRecentCollaboratorsData(myDataObj, username) {
     collaboratorsDetailsEl.setAttribute('open', '');
     const collaboratorsDetailsSummaryEl = document.createElement('summary');
 
-    collaboratorsDetailsSummaryEl.innerHTML = 'Accounts most interacted with recently:';
+    //collaboratorsDetailsSummaryEl.innerHTML = 'Accounts most interacted with recently:';
+    collaboratorsDetailsSummaryEl.append(collaboratorsSectionHeadingEl);
 
     const collaboratorsTableEl = document.createElement('table');
 
@@ -548,15 +555,17 @@ function displayRecentCollaboratorsData(myDataObj, username) {
     }
 
     collaboratorsDetailsEl.append(collaboratorsDetailsSummaryEl);
+    collaboratorsDetailsEl.append(collaboratorsChartContainerEl);
+
     collaboratorsDetailsEl.append(collaboratorsTableEl);
 
-    collaboratorsChartLegendEl.append(collaboratorsDetailsEl);
+    //collaboratorsChartLegendEl.append(collaboratorsDetailsEl);
 
     collaboratorsChartContainerEl.append(collaboratorsChartEl);
 
-    collaboratorsSectionEl.append(collaboratorsSectionHeadingEl);
-    collaboratorsSectionEl.append(collaboratorsChartContainerEl);
-    collaboratorsSectionEl.append(collaboratorsChartLegendEl);
+    //collaboratorsSectionEl.append(collaboratorsSectionHeadingEl);
+    //collaboratorsSectionEl.append(collaboratorsChartContainerEl);
+    collaboratorsSectionEl.append(collaboratorsDetailsEl);
 
 } // End of function displayRecentCollaboratorsData
 
