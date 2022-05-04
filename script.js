@@ -622,6 +622,114 @@ function displayRecentCollaboratorsData(myDataObj, username) {
 
 
 
+function handleEventFetch(username, response) {
+
+    //console.log(response);
+    /*
+        An array of event objects. Some examples of "type":
+
+        CreateEvent:
+        payload can have "ref_type": "branch" or "repository"
+
+        PullRequestEvent:
+        payload can have "action": "closed" or "opened"
+
+        IssuesEvent:
+        payload can have "action": "closed" or "opened"
+
+        WatchEvent: ignore?
+        (could let users toggle it on/off a graph)
+    */
+
+    // Get x most recent events, make a graph showing type breakdown?
+
+    const countEventTypes = {};
+
+    const countCreateEventRefTypes = {};
+    const countPullRequestEventRefTypes = {};
+    const countIssuesEventRefTypes = {};
+
+    const countRepoEvents = {};
+
+    response.forEach((element) => {
+
+        const type = element['type'];
+
+        // Count different types of event:
+        if (countEventTypes[type] === undefined) {
+            countEventTypes[type] = 1;
+        } else {
+            countEventTypes[type]++;
+        }
+
+        // Count different types of CreateEvent:
+        if (type === 'CreateEvent') {
+            const refType = element['payload']['ref_type'];
+            if (countCreateEventRefTypes[refType] === undefined) {
+                countCreateEventRefTypes[refType] = 1;
+            } else {
+                countCreateEventRefTypes[refType]++;
+            }
+        }
+
+        // Count different types of PullRequestEvent:
+        if (type === 'PullRequestEvent') {
+            const action = element['payload']['action'];
+            if (countPullRequestEventRefTypes[action] === undefined) {
+                countPullRequestEventRefTypes[action] = 1;
+            } else {
+                countPullRequestEventRefTypes[action]++;
+            }
+        }
+
+        // Count different types of IssuesEvent:
+        if (type === 'IssuesEvent') {
+            const action = element['payload']['action'];
+            if (countIssuesEventRefTypes[action] === undefined) {
+                countIssuesEventRefTypes[action] = 1;
+            } else {
+                countIssuesEventRefTypes[action]++;
+            }
+        }
+
+
+    /*  Most popular repos: can calculate this from events above.
+        "Figure out what their most popular repositories are" is ambiguous.
+        Let's start by counting any interaction(s) with a repo.
+    */
+
+        const repoId = element['repo']['id'];
+        // Not sure if name is unique
+        const repoName = element['repo']['name'];
+
+        if (countRepoEvents[repoId] === undefined) {
+            countRepoEvents[repoId] = {
+                'name': repoName,
+                'count': 1,
+            };
+        } else {
+            countRepoEvents[repoId]['count']++;
+        }
+
+    });
+    // End of response.forEach
+
+    //console.log(countEventTypes);
+    //console.log(countCreateEventRefTypes);
+    //console.log(countPullRequestEventRefTypes);
+    //console.log(countIssuesEventRefTypes);
+
+    //console.log(countRepoEvents);
+
+    displayRecentActivityData(countEventTypes);
+    displayRecentReposData(countRepoEvents);
+    displayRecentCollaboratorsData(countRepoEvents, username);
+
+}
+// End of function handleEventFetch
+
+
+
 let myChart1 = undefined;
 let myChart2 = undefined;
 let myChart3 = undefined;
@@ -738,107 +846,7 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    //console.log(response);
-                    /*
-                        An array of event objects. Some examples of "type":
-
-                        CreateEvent:
-                        payload can have "ref_type": "branch" or "repository"
-
-                        PullRequestEvent:
-                        payload can have "action": "closed" or "opened"
-
-                        IssuesEvent:
-                        payload can have "action": "closed" or "opened"
-
-                        WatchEvent: ignore?
-                        (could let users toggle it on/off a graph)
-                    */
-
-                    // Get x most recent events, make a graph showing type breakdown?
-
-                    const countEventTypes = {};
-
-                    const countCreateEventRefTypes = {};
-                    const countPullRequestEventRefTypes = {};
-                    const countIssuesEventRefTypes = {};
-
-                    const countRepoEvents = {};
-
-                    response.forEach((element) => {
-
-                        const type = element['type'];
-
-                        // Count different types of event:
-                        if (countEventTypes[type] === undefined) {
-                            countEventTypes[type] = 1;
-                        } else {
-                            countEventTypes[type]++;
-                        }
-
-                        // Count different types of CreateEvent:
-                        if (type === 'CreateEvent') {
-                            const refType = element['payload']['ref_type'];
-                            if (countCreateEventRefTypes[refType] === undefined) {
-                                countCreateEventRefTypes[refType] = 1;
-                            } else {
-                                countCreateEventRefTypes[refType]++;
-                            }
-                        }
-
-                        // Count different types of PullRequestEvent:
-                        if (type === 'PullRequestEvent') {
-                            const action = element['payload']['action'];
-                            if (countPullRequestEventRefTypes[action] === undefined) {
-                                countPullRequestEventRefTypes[action] = 1;
-                            } else {
-                                countPullRequestEventRefTypes[action]++;
-                            }
-                        }
-
-                        // Count different types of IssuesEvent:
-                        if (type === 'IssuesEvent') {
-                            const action = element['payload']['action'];
-                            if (countIssuesEventRefTypes[action] === undefined) {
-                                countIssuesEventRefTypes[action] = 1;
-                            } else {
-                                countIssuesEventRefTypes[action]++;
-                            }
-                        }
-
-
-                    /*  Most popular repos: can calculate this from events above.
-                        "Figure out what their most popular repositories are" is ambiguous.
-                        Let's start by counting any interaction(s) with a repo.
-                    */
-
-                        const repoId = element['repo']['id'];
-                        // Not sure if name is unique
-                        const repoName = element['repo']['name'];
-
-                        if (countRepoEvents[repoId] === undefined) {
-                            countRepoEvents[repoId] = {
-                                'name': repoName,
-                                'count': 1,
-                            };
-                        } else {
-                            countRepoEvents[repoId]['count']++;
-                        }
-
-                    });
-                    // End of response.forEach
-
-                    //console.log(countEventTypes);
-                    //console.log(countCreateEventRefTypes);
-                    //console.log(countPullRequestEventRefTypes);
-                    //console.log(countIssuesEventRefTypes);
-
-                    //console.log(countRepoEvents);
-
-                    displayRecentActivityData(countEventTypes);
-                    displayRecentReposData(countRepoEvents);
-                    displayRecentCollaboratorsData(countRepoEvents, username);
-
+                    handleEventFetch(username, response);
                 });
 
         })
