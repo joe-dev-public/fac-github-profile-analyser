@@ -142,6 +142,31 @@ function myError(message, reason = '') {
 
 
 
+function chartSetSingleActiveElement(chart, idx) {
+
+    // https://www.chartjs.org/docs/3.0.2/samples/advanced/programmatic-events.html
+
+    // if (chart.getActiveElements().length > 0)
+
+    chart.setActiveElements([]);
+    chart.setActiveElements([
+        {
+            datasetIndex: 0,
+            index: idx,
+        },
+    ]);
+
+    chart.update();
+
+}
+
+
+function chartSetNoActiveElements(chart) {
+    chart.setActiveElements([]);
+    chart.update();
+}
+
+
 function displayRecentActivityData(myDataObj) {
 
     /*  Take an object with labels: numbers.
@@ -198,6 +223,9 @@ function displayRecentActivityData(myDataObj) {
                 /* label: 'Testing', */
                 backgroundColor: backgroundColours,
                 data: myData,
+                hoverBorderWidth: 2,
+                // Todo: set this colour as a variable, add the same colour border to the legend
+                hoverBorderColor: 'rgb(30, 30, 30)',
             },
         ]
     };
@@ -206,6 +234,14 @@ function displayRecentActivityData(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            transitions: {
+                active: {
+                    animation: {
+                        // Todo: fix: this seems to work the first time, then gets ignored?
+                        duration: 0,
+                    },
+                },
+            },
             responsive: false,
             // Get rid of mouse hover stuff:
             events: [],
@@ -312,6 +348,14 @@ function displayRecentActivityData(myDataObj) {
         const idx = i % backgroundColours.length;
         const activityTableRowEl = document.createElement('tr');
         activityTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};">${myLabels[i]}</td><td>${myData[i]}</td>`;
+
+        activityTableRowEl.addEventListener('mouseenter', () => {
+            chartSetSingleActiveElement(myChart1, i);
+        });
+        activityTableRowEl.addEventListener('mouseleave', () => {
+            chartSetNoActiveElements(myChart1);
+        });
+
         activityTableEl.append(activityTableRowEl);
     }
 
@@ -396,6 +440,8 @@ function displayRecentReposData(myDataObj) {
             {
                 data: myData,
                 backgroundColor: backgroundColours,
+                hoverBorderWidth: 2,
+                hoverBorderColor: 'rgb(30, 30, 30)',
             },
         ]
     };
@@ -404,6 +450,13 @@ function displayRecentReposData(myDataObj) {
         type: 'pie',
         data: data,
         options: {
+            transitions: {
+                active: {
+                    animation: {
+                        duration: 0,
+                    },
+                },
+            },
             responsive: false,
             events: [],
             plugins: {
@@ -458,8 +511,15 @@ function displayRecentReposData(myDataObj) {
 
         const reposTableRowEl = document.createElement('tr');
         reposTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a></td><td>${myData[i]}</td>`;
-        reposTableEl.append(reposTableRowEl);
 
+        reposTableRowEl.addEventListener('mouseenter', () => {
+            chartSetSingleActiveElement(myChart2, i);
+        });
+        reposTableRowEl.addEventListener('mouseleave', () => {
+            chartSetNoActiveElements(myChart2);
+        });
+
+        reposTableEl.append(reposTableRowEl);
     }
 
     reposDetailsSummaryEl.append(reposSectionHeadingEl);
@@ -553,6 +613,8 @@ function displayRecentCollaboratorsData(myDataObj, username) {
             {
                 data: myData,
                 backgroundColor: backgroundColours,
+                hoverBorderWidth: 2,
+                hoverBorderColor: 'rgb(30, 30, 30)',
             },
         ]
     };
@@ -561,6 +623,13 @@ function displayRecentCollaboratorsData(myDataObj, username) {
         type: 'pie',
         data: data,
         options: {
+            transitions: {
+                active: {
+                    animation: {
+                        duration: 0,
+                    },
+                },
+            },
             responsive: false,
             events: [],
             plugins: {
@@ -625,6 +694,14 @@ function displayRecentCollaboratorsData(myDataObj, username) {
         html += `</td>`;
 
         collaboratorsTableRowEl.innerHTML = html;
+
+        collaboratorsTableRowEl.addEventListener('mouseenter', () => {
+            chartSetSingleActiveElement(myChart3, i);
+        });
+        collaboratorsTableRowEl.addEventListener('mouseleave', () => {
+            chartSetNoActiveElements(myChart3);
+        });
+
         collaboratorsTableEl.append(collaboratorsTableRowEl);
 
     }
