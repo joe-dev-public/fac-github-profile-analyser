@@ -245,6 +245,18 @@ function displayRecentActivityData(myDataObj) {
         config
     );
 
+    /*  Todo: you could link to GitHub's API docs to explain what each kind of event is.
+        e.g.:
+        - https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#pushevent
+            - "One or more commits are pushed to a repository branch or tag."
+        - https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#issuesevent
+            - "Activity related to an issue."
+        - https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#createevent
+            - "A Git branch or tag is created."
+        - etc.
+        But they're all pretty self-explanatory, so.. not urgent!
+    */
+
     for (let i = 0; i < myLabels.length; i++) {
         const idx = i % backgroundColours.length;
         const activityTableRowEl = document.createElement('tr');
