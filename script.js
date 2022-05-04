@@ -104,6 +104,44 @@ generateColourPalette();
 
 
 
+function clearAllOutputs() {
+
+    profileSectionEl.innerHTML = '';
+    starsSectionEl.innerHTML = '';
+    activitySectionEl.innerHTML = '';
+    reposSectionEl.innerHTML = '';
+    collaboratorsSectionEl.innerHTML = '';
+
+}
+
+
+function myError(message, reason = '') {
+
+    clearAllOutputs;
+
+    const errorHeading = document.createElement('h2');
+    errorHeading.innerHTML = 'Error';
+
+    const errorMessage = document.createElement('p');
+    errorMessage.innerHTML = message;
+
+    profileSectionEl.append(errorHeading);
+    profileSectionEl.append(errorMessage);
+
+    if (reason !== '') {
+        const errorReason = document.createElement('p');
+        errorReason.classList.add('error-reason');
+        errorReason.innerHTML = reason;
+        profileSectionEl.append(errorReason);
+    }
+
+    //throw new Error(message);
+
+}
+// End of function myError
+
+
+
 function displayRecentActivityData(myDataObj) {
 
     /*  Take an object with labels: numbers.
@@ -209,9 +247,6 @@ function displayRecentActivityData(myDataObj) {
 
     // Make the text a bit bigger:
     //Chart.defaults.font.size = 16;
-
-    const activitySectionEl = document.getElementById('activity');
-    activitySectionEl.innerHTML = '';
 
     const activitySectionHeadingEl = document.createElement('h2');
     activitySectionHeadingEl.innerText = 'Recent activity';
@@ -385,10 +420,6 @@ function displayRecentReposData(myDataObj) {
         },
     };
 
-    const reposSectionEl = document.getElementById('repos');
-
-    reposSectionEl.innerHTML = '';
-
     const reposSectionHeadingEl = document.createElement('h2');
     reposSectionHeadingEl.innerText = 'Most popular repos';
 
@@ -546,10 +577,6 @@ function displayRecentCollaboratorsData(myDataObj, username) {
         },
     };
 
-    const collaboratorsSectionEl = document.getElementById('collaborators');
-
-    collaboratorsSectionEl.innerHTML = '';
-
     const collaboratorsSectionHeadingEl = document.createElement('h2');
     collaboratorsSectionHeadingEl.innerText = 'Top collaborators';
 
@@ -622,6 +649,172 @@ function displayRecentCollaboratorsData(myDataObj, username) {
 
 
 
+function handleUsersFetch(response) {
+
+    //console.log(response);
+
+    const id = response['id'];
+
+    let html = `
+<a href="${response['html_url']}">
+  <img src="${response['avatar_url']}">
+  ${response['login']}
+</a>
+`;
+
+    profileSectionEl.innerHTML = html;
+
+}
+// End of function handleUsersFetch
+
+
+
+function handleStarredFetch(response) {
+
+    //console.log(response);
+
+    const starsDetailsEl = document.createElement('details');
+    starsDetailsEl.setAttribute('open', '');
+
+    const starsDetailsSummaryEl = document.createElement('summary');
+    const starsSectionHeadingEl = document.createElement('h2');
+    starsSectionHeadingEl.innerHTML = `Starred projects: ⭐ ${response.length}`;
+
+    starsDetailsSummaryEl.append(starsSectionHeadingEl);
+    starsDetailsEl.append(starsDetailsSummaryEl);
+
+    // An array of starred projects (length zero if none)
+    if (response.length === 0) {
+        // This isn't necessarily a good approach:
+        starsDetailsEl.append(document.createElement('p').innerHTML = 'No starred projects. 🙁');
+    } else {
+        const starsListEl = document.createElement('ul');
+        response.forEach((element) => {
+            // An array of objects for each starred project
+            const listItemEl = document.createElement('li');
+            listItemEl.innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`;
+            starsListEl.append(listItemEl);
+            // Trying to do it in one go like this means that the HTML renders as text, for some reason:
+            //starsListEl.append(document.createElement('li').innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`);
+        });
+        starsDetailsEl.append(starsListEl);
+    }
+
+    starsSectionEl.append(starsDetailsEl);
+
+}
+// End of function handleStarredFetch
+
+
+
+function handleEventsFetch(username, response) {
+
+    //console.log(response);
+    /*
+        An array of event objects. Some examples of "type":
+
+        CreateEvent:
+        payload can have "ref_type": "branch" or "repository"
+
+        PullRequestEvent:
+        payload can have "action": "closed" or "opened"
+
+        IssuesEvent:
+        payload can have "action": "closed" or "opened"
+
+        WatchEvent: ignore?
+        (could let users toggle it on/off a graph)
+    */
+
+    // Get x most recent events, make a graph showing type breakdown?
+
+    const countEventTypes = {};
+
+    const countCreateEventRefTypes = {};
+    const countPullRequestEventRefTypes = {};
+    const countIssuesEventRefTypes = {};
+
+    const countRepoEvents = {};
+
+    response.forEach((element) => {
+
+        const type = element['type'];
+
+        // Count different types of event:
+        if (countEventTypes[type] === undefined) {
+            countEventTypes[type] = 1;
+        } else {
+            countEventTypes[type]++;
+        }
+
+        // Count different types of CreateEvent:
+        if (type === 'CreateEvent') {
+            const refType = element['payload']['ref_type'];
+            if (countCreateEventRefTypes[refType] === undefined) {
+                countCreateEventRefTypes[refType] = 1;
+            } else {
+                countCreateEventRefTypes[refType]++;
+            }
+        }
+
+        // Count different types of PullRequestEvent:
+        if (type === 'PullRequestEvent') {
+            const action = element['payload']['action'];
+            if (countPullRequestEventRefTypes[action] === undefined) {
+                countPullRequestEventRefTypes[action] = 1;
+            } else {
+                countPullRequestEventRefTypes[action]++;
+            }
+        }
+
+        // Count different types of IssuesEvent:
+        if (type === 'IssuesEvent') {
+            const action = element['payload']['action'];
+            if (countIssuesEventRefTypes[action] === undefined) {
+                countIssuesEventRefTypes[action] = 1;
+            } else {
+                countIssuesEventRefTypes[action]++;
+            }
+        }
+
+
+    /*  Most popular repos: can calculate this from events above.
+        "Figure out what their most popular repositories are" is ambiguous.
+        Let's start by counting any interaction(s) with a repo.
+    */
+
+        const repoId = element['repo']['id'];
+        // Not sure if name is unique
+        const repoName = element['repo']['name'];
+
+        if (countRepoEvents[repoId] === undefined) {
+            countRepoEvents[repoId] = {
+                'name': repoName,
+                'count': 1,
+            };
+        } else {
+            countRepoEvents[repoId]['count']++;
+        }
+
+    });
+    // End of response.forEach
+
+    //console.log(countEventTypes);
+    //console.log(countCreateEventRefTypes);
+    //console.log(countPullRequestEventRefTypes);
+    //console.log(countIssuesEventRefTypes);
+
+    //console.log(countRepoEvents);
+
+    displayRecentActivityData(countEventTypes);
+    displayRecentReposData(countRepoEvents);
+    displayRecentCollaboratorsData(countRepoEvents, username);
+
+}
+// End of function handleEventsFetch
+
+
+
 let myChart1 = undefined;
 let myChart2 = undefined;
 let myChart3 = undefined;
@@ -631,9 +824,12 @@ const mainEl = document.querySelector('main');
 
 const formEl = document.querySelector('form');
 
-const profileEl = document.getElementById('profile');
+const profileSectionEl = document.getElementById('profile');
+const starsSectionEl = document.getElementById('stars');
+const activitySectionEl = document.getElementById('activity');
+const reposSectionEl = document.getElementById('repos');
+const collaboratorsSectionEl = document.getElementById('collaborators');
 
-const starsEl = document.getElementById('stars');
 
 
 function myFetch(url) {
@@ -654,6 +850,8 @@ formEl.addEventListener('submit', (event) => {
 
     event.preventDefault();
 
+    clearAllOutputs();
+
     const myFormData = new FormData(formEl);
 
     const objFromFormData = Object.fromEntries(myFormData);
@@ -662,26 +860,18 @@ formEl.addEventListener('submit', (event) => {
 
     myFetch(`https://api.github.com/users/${username}`)
         .then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            } else {
-                profileEl.innerHTML = `<p>Profile not found</p>`;
-                throw new Error("Profile not found!");
+            switch (response.status) {
+                case 200:
+                    return response.json();
+                case 404:
+                    throw new Error('Profile not found.');
+                default:
+                    throw new Error(`${response['status']}: ${response['statusText']}`);
             }
         })
         .then((response) => {
-            //console.log(response);
 
-            const id = response['id'];
-
-            let html = `
-<a href="${response['html_url']}">
-<img src="${response['avatar_url']}">
-${response['login']}
-</a>
-`;
-
-            profileEl.innerHTML = html;
+            handleUsersFetch(response);
 
             // Starred projects:
             //response['starred_url']
@@ -690,39 +880,7 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    //console.log(response);
-
-                    starsEl.innerHTML = '';
-
-                    const starsDetailsEl = document.createElement('details');
-                    starsDetailsEl.setAttribute('open', '');
-
-                    const starsDetailsSummaryEl = document.createElement('summary');
-                    const starsSectionHeadingEl = document.createElement('h2');
-                    starsSectionHeadingEl.innerHTML = `Starred projects: ⭐ ${response.length}`;
-
-                    starsDetailsSummaryEl.append(starsSectionHeadingEl);
-                    starsDetailsEl.append(starsDetailsSummaryEl);
-
-                    // An array of starred projects (length zero if none)
-                    if (response.length === 0) {
-                        // This isn't necessarily a good approach:
-                        starsDetailsEl.append(document.createElement('p').innerHTML = 'No starred projects. 🙁');
-                    } else {
-                        const starsListEl = document.createElement('ul');
-                        response.forEach((element) => {
-                            // An array of objects for each starred project
-                            const listItemEl = document.createElement('li');
-                            listItemEl.innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`;
-                            starsListEl.append(listItemEl);
-                            // Trying to do it in one go like this means that the HTML renders as text, for some reason:
-                            //starsListEl.append(document.createElement('li').innerHTML = `<a href="${element['html_url']}">${element['name']}</a>`);
-                        });
-                        starsDetailsEl.append(starsListEl);
-                    }
-
-                    starsEl.append(starsDetailsEl);
-
+                    handleStarredFetch(response);
                 });
 
 
@@ -738,113 +896,15 @@ ${response['login']}
                     return response.json();
                 })
                 .then((response) => {
-                    //console.log(response);
-                    /*
-                        An array of event objects. Some examples of "type":
-
-                        CreateEvent:
-                        payload can have "ref_type": "branch" or "repository"
-
-                        PullRequestEvent:
-                        payload can have "action": "closed" or "opened"
-
-                        IssuesEvent:
-                        payload can have "action": "closed" or "opened"
-
-                        WatchEvent: ignore?
-                        (could let users toggle it on/off a graph)
-                    */
-
-                    // Get x most recent events, make a graph showing type breakdown?
-
-                    const countEventTypes = {};
-
-                    const countCreateEventRefTypes = {};
-                    const countPullRequestEventRefTypes = {};
-                    const countIssuesEventRefTypes = {};
-
-                    const countRepoEvents = {};
-
-                    response.forEach((element) => {
-
-                        const type = element['type'];
-
-                        // Count different types of event:
-                        if (countEventTypes[type] === undefined) {
-                            countEventTypes[type] = 1;
-                        } else {
-                            countEventTypes[type]++;
-                        }
-
-                        // Count different types of CreateEvent:
-                        if (type === 'CreateEvent') {
-                            const refType = element['payload']['ref_type'];
-                            if (countCreateEventRefTypes[refType] === undefined) {
-                                countCreateEventRefTypes[refType] = 1;
-                            } else {
-                                countCreateEventRefTypes[refType]++;
-                            }
-                        }
-
-                        // Count different types of PullRequestEvent:
-                        if (type === 'PullRequestEvent') {
-                            const action = element['payload']['action'];
-                            if (countPullRequestEventRefTypes[action] === undefined) {
-                                countPullRequestEventRefTypes[action] = 1;
-                            } else {
-                                countPullRequestEventRefTypes[action]++;
-                            }
-                        }
-
-                        // Count different types of IssuesEvent:
-                        if (type === 'IssuesEvent') {
-                            const action = element['payload']['action'];
-                            if (countIssuesEventRefTypes[action] === undefined) {
-                                countIssuesEventRefTypes[action] = 1;
-                            } else {
-                                countIssuesEventRefTypes[action]++;
-                            }
-                        }
-
-
-                    /*  Most popular repos: can calculate this from events above.
-                        "Figure out what their most popular repositories are" is ambiguous.
-                        Let's start by counting any interaction(s) with a repo.
-                    */
-
-                        const repoId = element['repo']['id'];
-                        // Not sure if name is unique
-                        const repoName = element['repo']['name'];
-
-                        if (countRepoEvents[repoId] === undefined) {
-                            countRepoEvents[repoId] = {
-                                'name': repoName,
-                                'count': 1,
-                            };
-                        } else {
-                            countRepoEvents[repoId]['count']++;
-                        }
-
-                    });
-                    // End of response.forEach
-
-                    //console.log(countEventTypes);
-                    //console.log(countCreateEventRefTypes);
-                    //console.log(countPullRequestEventRefTypes);
-                    //console.log(countIssuesEventRefTypes);
-
-                    //console.log(countRepoEvents);
-
-                    displayRecentActivityData(countEventTypes);
-                    displayRecentReposData(countRepoEvents);
-                    displayRecentCollaboratorsData(countRepoEvents, username);
-
+                    handleEventsFetch(username, response);
                 });
 
         })
         .catch((reason) => {
-            console.log("Catch");
-            console.log(reason);
+            // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch#checking_that_the_fetch_was_successful
+            // If the promise doesn't resolve, there's a problem with the fetch.
+            // (Most likely a network thing? That's probably all I'll test.)
+            myError(reason);
         });
 
 });
