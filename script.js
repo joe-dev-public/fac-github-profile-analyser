@@ -657,8 +657,8 @@ function handleUsersFetch(response) {
 
     let html = `
 <a href="${response['html_url']}">
-<img src="${response['avatar_url']}">
-${response['login']}
+  <img src="${response['avatar_url']}">
+  ${response['login']}
 </a>
 `;
 
@@ -672,8 +672,6 @@ ${response['login']}
 function handleStarredFetch(response) {
 
     //console.log(response);
-
-    starsSectionEl.innerHTML = '';
 
     const starsDetailsEl = document.createElement('details');
     starsDetailsEl.setAttribute('open', '');
