@@ -161,10 +161,43 @@ function chartSetSingleActiveElement(chart, idx) {
 }
 
 
+
 function chartSetNoActiveElements(chart) {
     chart.setActiveElements([]);
     chart.update();
 }
+
+
+
+function chartHoverGetIndex(chart, event) {
+    // https://www.chartjs.org/docs/latest/developers/api.html#getelementsateventformode-e-mode-options-usefinalposition
+    const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+
+    if (points.length) {
+        const firstPoint = points[0];
+        //const label = chart.data.labels[firstPoint.index];
+        //const value = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
+        //console.log(`${firstPoint.index} ${label} ${value}`);
+        return firstPoint['index'];
+    }
+}
+
+
+
+function highlightLegendOnChartHover(chart, event, legend) {
+
+    const index = chartHoverGetIndex(chart, event);
+
+    //console.log(index);
+
+    for (const element of legend.children) {
+        element.classList.remove('table-row-highlight');
+    }
+
+    legend.children[index].classList.add('table-row-highlight');
+
+}
+
 
 
 function displayRecentActivityData(myDataObj) {
@@ -377,6 +410,13 @@ function displayRecentActivityData(myDataObj) {
 
     activitySectionEl.append(activityDetailsEl);
 
+    // Todo: optimisation: this might be a slow/expensive way of doing this!
+    activityChartEl.addEventListener('mousemove', (event) => {
+        highlightLegendOnChartHover(myChart1, event, activityTableEl);
+    });
+
+    // Todo: fix: add a mouseleave event to remove the legend highlight class? (It can get stuck!)
+
 } // End of function displayRecentActivityData
 
 
@@ -539,6 +579,10 @@ function displayRecentReposData(myDataObj) {
     reposDetailsEl.append(reposDetailsContainer);
 
     reposSectionEl.append(reposDetailsEl);
+
+    reposChartEl.addEventListener('mousemove', (event) => {
+        highlightLegendOnChartHover(myChart2, event, reposTableEl);
+    });
 
 } // End of function displayRecentReposData
 
@@ -723,6 +767,10 @@ function displayRecentCollaboratorsData(myDataObj, username) {
     collaboratorsDetailsEl.append(collaboratorsDetailsContainer);
 
     collaboratorsSectionEl.append(collaboratorsDetailsEl);
+
+    collaboratorsChartEl.addEventListener('mousemove', (event) => {
+        highlightLegendOnChartHover(myChart3, event, collaboratorsTableEl);
+    });
 
 } // End of function displayRecentCollaboratorsData
 

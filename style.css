@@ -111,7 +111,7 @@ td {
     padding: 0.25rem 0.5rem;
 }
 
-tr:nth-child(2n) > td {
+tr:nth-child(2n) {
     background-color: var(--light-grey);
 }
 
@@ -129,4 +129,8 @@ footer {
     background-color: hsl(0, 75%, 97%);
     border: 1px solid hsl(0, 75%, 75%);
     padding: 1rem;
+}
+
+tr:hover > td, .table-row-highlight > td {
+    background-color: lightsalmon;
 }
