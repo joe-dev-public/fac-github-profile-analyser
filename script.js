@@ -184,18 +184,20 @@ function chartHoverGetIndex(chart, event) {
 
 
 
-function highlightLegendOnChartHover(chart, event, legend) {
-
-    const index = chartHoverGetIndex(chart, event);
-
-    //console.log(index);
-
+function removeAllLegendHighlights(legend) {
     for (const element of legend.children) {
         element.classList.remove('table-row-highlight');
     }
+}
 
-    legend.children[index].classList.add('table-row-highlight');
 
+
+function highlightLegendOnChartHover(chart, event, legend) {
+    const index = chartHoverGetIndex(chart, event);
+    removeAllLegendHighlights(legend);
+    if (index !== undefined) {
+        legend.children[index].classList.add('table-row-highlight');
+    }
 }
 
 
@@ -415,7 +417,10 @@ function displayRecentActivityData(myDataObj) {
         highlightLegendOnChartHover(myChart1, event, activityTableEl);
     });
 
-    // Todo: fix: add a mouseleave event to remove the legend highlight class? (It can get stuck!)
+    // Add a mouseleave event to remove the legend highlight class (It can get stuck!)
+    activityChartEl.addEventListener('mouseleave', () => {
+        removeAllLegendHighlights(activityTableEl);
+    });
 
 } // End of function displayRecentActivityData
 
@@ -582,6 +587,10 @@ function displayRecentReposData(myDataObj) {
 
     reposChartEl.addEventListener('mousemove', (event) => {
         highlightLegendOnChartHover(myChart2, event, reposTableEl);
+    });
+
+    reposChartEl.addEventListener('mouseleave', () => {
+        removeAllLegendHighlights(reposTableEl);
     });
 
 } // End of function displayRecentReposData
@@ -770,6 +779,10 @@ function displayRecentCollaboratorsData(myDataObj, username) {
 
     collaboratorsChartEl.addEventListener('mousemove', (event) => {
         highlightLegendOnChartHover(myChart3, event, collaboratorsTableEl);
+    });
+
+    collaboratorsChartEl.addEventListener('mouseleave', () => {
+        removeAllLegendHighlights(collaboratorsTableEl);
     });
 
 } // End of function displayRecentCollaboratorsData

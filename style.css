@@ -9,6 +9,7 @@
     --lighter-grey: hsl(0, 0%, 95%);
     --light-grey: hsl(0, 0%, 90%);
     --dark-grey: hsl(0, 0%, 65%);
+    --light-yellow: hsl(60, 100%, 90%);
 }
 
 h1 {
@@ -132,5 +133,5 @@ footer {
 }
 
 tr:hover > td, .table-row-highlight > td {
-    background-color: lightsalmon;
+    background-color: var(--light-yellow);
 }
