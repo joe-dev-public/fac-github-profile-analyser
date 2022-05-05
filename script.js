@@ -202,7 +202,7 @@ function highlightLegendOnChartHover(chart, event, legend) {
 
 
 
-function displayChartAndLegend(myLabels, myData, chart, sectionEl) {
+function displayChartAndLegend(myLabels, myData, chart, sectionEl, section, username = '') {
 
     const data = {
         labels: myLabels,
@@ -339,7 +339,7 @@ function displayChartAndLegend(myLabels, myData, chart, sectionEl) {
 
     // Do different stuff depending on what chart we're handling?
     // How should this be done?
-    console.log(chart.name);
+
 
     for (let i = 0; i < myLabels.length; i++) {
         // I spent *way* too much time trying to work this out. You just need the remainder!
@@ -347,29 +347,42 @@ function displayChartAndLegend(myLabels, myData, chart, sectionEl) {
 
         const tableRowEl = document.createElement('tr');
 
-
-        // activity:
-        //tableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};">${myLabels[i]}</td><td>${myData[i]}</td>`;
-
-        // repos:    
-        // reposTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a></td><td>${myData[i]}</td>`;
-
-        // collaborators:
-        /*
         let html = `
 <td style="border-left: 2rem solid ${backgroundColours[idx]};">
+`;
+
+        if (section === 'activity') {
+
+            html += `
+  ${myLabels[i]}
+</td>
+<td>
+  ${myData[i]}
+</td>
+`;
+
+        } else if (section === 'repos') {
+
+            html += `
+<a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a></td><td>${myData[i]}</td>
+`;
+
+        } else if (section === 'collaborators') {
+
+            html += `
     <a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>
 </td>
 <td>
     ${myData[i]}
 `;
 
-        if (myLabels[i] === username) { html += ` <em><!-- &larr;  -->(this is the user you searched for)</em>`; }
-        html += `</td>`;
+            if (myLabels[i] === username) { html += ` <em><!-- &larr;  -->(this is the user you searched for)</em>`; }
 
-        collaboratorsTableRowEl.innerHTML = html;
-        */
+            html += `</td>`;
 
+        }
+
+        tableRowEl.innerHTML = html;
 
         tableRowEl.addEventListener('mouseenter', () => {
             chartSetSingleActiveElement(chart, i);
@@ -379,6 +392,7 @@ function displayChartAndLegend(myLabels, myData, chart, sectionEl) {
         });
 
         tableEl.append(tableRowEl);
+
     }
 
 
@@ -461,7 +475,7 @@ function displayRecentActivityData(myDataObj) {
     }
 
 
-    displayChartAndLegend(myLabels, myData, activityChart, activitySectionEl);
+    displayChartAndLegend(myLabels, myData, activityChart, activitySectionEl, 'activity');
 
 
     /*  Todo: you could link to GitHub's API docs to explain what each kind of event is.
@@ -538,7 +552,7 @@ function displayRecentReposData(myDataObj) {
     }
 
 
-    displayChartAndLegend(myLabels, myData, reposChart, reposSectionEl);
+    displayChartAndLegend(myLabels, myData, reposChart, reposSectionEl, 'repos');
 
 
 } // End of function displayRecentReposData
@@ -610,7 +624,7 @@ function displayRecentCollaboratorsData(myDataObj, username) {
 
 
     // Call function to draw chart etc.
-    displayChartAndLegend(myLabels, myData, collaboratorsChart, collaboratorsSectionEl);
+    displayChartAndLegend(myLabels, myData, collaboratorsChart, collaboratorsSectionEl, 'collaborators', username);
 
 
 } // End of function displayRecentCollaboratorsData
