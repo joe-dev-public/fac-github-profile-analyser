@@ -202,6 +202,230 @@ function highlightLegendOnChartHover(chart, event, legend) {
 
 
 
+function displayChartAndLegend(myLabels, myData, chart, sectionEl, section, username = '') {
+
+    const data = {
+        labels: myLabels,
+        datasets: [
+            {
+                /* label: 'Testing', */
+                backgroundColor: backgroundColours,
+                data: myData,
+                hoverBorderWidth: 2,
+                // Todo: set this colour as a variable, add the same colour border to the legend
+                hoverBorderColor: 'rgb(30, 30, 30)',
+            },
+        ]
+    };
+
+    const config = {
+        type: 'pie',
+        data: data,
+        options: {
+            transitions: {
+                active: {
+                    animation: {
+                        // Todo: fix: this seems to work the first time, then gets ignored?
+                        // Note: commenting the events: [] line below and then mouseover-ing
+                        // the chart seems to fix this?
+                        duration: 0,
+                    },
+                },
+            },
+            responsive: false,
+            // Get rid of mouse hover stuff:
+            //events: [],
+            //maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                    // Todo: we're not using labels any more, so could prob remove this?
+                    labels: {
+                        // https://stackoverflow.com/questions/39454586/pie-chart-legend-chart-js
+                        // --> https://jsfiddle.net/6bexkyd9/
+                        // https://www.chartjs.org/docs/latest/samples/other-charts/multi-series-pie.html
+                        //generateLabels: function(chart) {
+
+                        //},
+                        font: {
+                            size: 16,
+                        },
+                    },
+                    // Make this viewport-dependent?
+                    position: 'right',
+                },
+            },
+/*             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Event type",
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of events',
+                    },
+                },
+            }, */
+        },
+    };
+
+
+
+    // Todo: table headers. If you want.
+    /*
+    const activityTableHeader = document.createElement('thead');
+
+    activityTableHeader.innerHTML = `
+<tr>
+  <td style="border-left: 2rem solid transparent;">
+    Event type
+  </td>
+  <td>No.</td>
+</tr>
+`;
+
+    activityTableEl.append(activityTableHeader);
+    */
+
+
+
+    const sectionHeadingEl = document.createElement('h2');
+    // Needs to be a parameter or something:
+    sectionHeadingEl.innerText = '';
+    // 'Recent activity'
+    // 'Most popular repos'
+    // 'Top collaborators'
+
+    const chartContainerEl = document.createElement('div');
+    chartContainerEl.classList.add('chart-container');
+    const chartEl = document.createElement('canvas');
+
+    const detailsEl = document.createElement('details');
+    detailsEl.setAttribute('open', '');
+    const detailsSummaryEl = document.createElement('summary');
+
+    const detailsContainer = document.createElement('div');
+    detailsContainer.classList.add('row');
+
+    const legendContainer = document.createElement('div');
+    legendContainer.classList.add('legend-container');
+
+    const legendHeading = document.createElement('h3');
+    // Needs to be a parameter or something:
+    legendHeading.innerHTML = '';
+    // 'Types of recent activity:'
+    // 'Repos most interacted with recently:'
+    // 'Accounts most interacted with recently:'
+
+    const tableEl = document.createElement('table');
+
+
+    // Need parameters for: chart, chartEl
+
+    // If chart already exists, destroy it before creating a new one:
+    if (chart) {
+        chart.destroy();
+    }
+
+    // Instantiate new chart using config set above:
+    chart = new Chart(
+        chartEl,
+        config
+    );
+
+
+    // Do different stuff depending on what chart we're handling?
+    // How should this be done?
+
+
+    for (let i = 0; i < myLabels.length; i++) {
+        // I spent *way* too much time trying to work this out. You just need the remainder!
+        const idx = i % backgroundColours.length;
+
+        const tableRowEl = document.createElement('tr');
+
+        let html = `
+<td style="border-left: 2rem solid ${backgroundColours[idx]};">
+`;
+
+        if (section === 'activity') {
+
+            html += `
+  ${myLabels[i]}
+</td>
+<td>
+  ${myData[i]}
+</td>
+`;
+
+        } else if (section === 'repos') {
+
+            html += `
+<a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a></td><td>${myData[i]}</td>
+`;
+
+        } else if (section === 'collaborators') {
+
+            html += `
+    <a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>
+</td>
+<td>
+    ${myData[i]}
+`;
+
+            if (myLabels[i] === username) { html += ` <em><!-- &larr;  -->(this is the user you searched for)</em>`; }
+
+            html += `</td>`;
+
+        }
+
+        tableRowEl.innerHTML = html;
+
+        tableRowEl.addEventListener('mouseenter', () => {
+            chartSetSingleActiveElement(chart, i);
+        });
+        tableRowEl.addEventListener('mouseleave', () => {
+            chartSetNoActiveElements(chart);
+        });
+
+        tableEl.append(tableRowEl);
+
+    }
+
+
+    detailsSummaryEl.append(sectionHeadingEl);
+
+    detailsEl.append(detailsSummaryEl);
+
+    chartContainerEl.append(chartEl);
+
+    legendContainer.append(legendHeading);
+    legendContainer.append(tableEl);
+
+    detailsContainer.append(chartContainerEl);
+    detailsContainer.append(legendContainer);
+
+    detailsEl.append(detailsContainer);
+
+    sectionEl.append(detailsEl);
+
+    // Todo: optimisation: this might be a slow/expensive way of doing this!
+    chartEl.addEventListener('mousemove', (event) => {
+        highlightLegendOnChartHover(chart, event, tableEl);
+    });
+
+    // Add a mouseleave event to remove the legend highlight class (It can get stuck!)
+    chartEl.addEventListener('mouseleave', () => {
+        removeAllLegendHighlights(tableEl);
+    });
+
+}
+
+
+
 function displayRecentActivityData(myDataObj) {
 
     /*  Take an object with labels: numbers.
@@ -251,123 +475,8 @@ function displayRecentActivityData(myDataObj) {
     }
 
 
-    const data = {
-        labels: myLabels,
-        datasets: [
-            {
-                /* label: 'Testing', */
-                backgroundColor: backgroundColours,
-                data: myData,
-                hoverBorderWidth: 2,
-                // Todo: set this colour as a variable, add the same colour border to the legend
-                hoverBorderColor: 'rgb(30, 30, 30)',
-            },
-        ]
-    };
+    displayChartAndLegend(myLabels, myData, activityChart, activitySectionEl, 'activity');
 
-    const config = {
-        type: 'pie',
-        data: data,
-        options: {
-            transitions: {
-                active: {
-                    animation: {
-                        // Todo: fix: this seems to work the first time, then gets ignored?
-                        // Note: commenting the events: [] line below and then mouseover-ing
-                        // the chart seems to fix this?
-                        duration: 0,
-                    },
-                },
-            },
-            responsive: false,
-            // Get rid of mouse hover stuff:
-            //events: [],
-            //maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                    labels: {
-                        // https://stackoverflow.com/questions/39454586/pie-chart-legend-chart-js
-                        // --> https://jsfiddle.net/6bexkyd9/
-                        // https://www.chartjs.org/docs/latest/samples/other-charts/multi-series-pie.html
-                        //generateLabels: function(chart) {
-
-                        //},
-                        font: {
-                            size: 16,
-                        },
-                    },
-                    // Make this viewport-dependent?
-                    position: 'right',
-                },
-            },
-/*             scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: "Event type",
-                    },
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Number of events',
-                    },
-                },
-            }, */
-        },
-    };
-
-    // Make the text a bit bigger:
-    //Chart.defaults.font.size = 16;
-
-    const activitySectionHeadingEl = document.createElement('h2');
-    activitySectionHeadingEl.innerText = 'Recent activity';
-
-    const activityChartContainerEl = document.createElement('div');
-    activityChartContainerEl.classList.add('chart-container');
-    const activityChartEl = document.createElement('canvas');
-
-    const activityDetailsEl = document.createElement('details');
-    activityDetailsEl.setAttribute('open', '');
-    const activityDetailsSummaryEl = document.createElement('summary');
-
-    const activityDetailsContainer = document.createElement('div');
-    activityDetailsContainer.classList.add('row');
-
-    const activityLegendContainer = document.createElement('div');
-    activityLegendContainer.classList.add('legend-container');
-
-    const activityLegendHeading = document.createElement('h3');
-    activityLegendHeading.innerHTML = 'Types of recent activity:';
-
-    const activityTableEl = document.createElement('table');
-
-    // Todo: table headers. If you want.
-    /*
-    const activityTableHeader = document.createElement('thead');
-
-    activityTableHeader.innerHTML = `
-<tr>
-  <td style="border-left: 2rem solid transparent;">
-    Event type
-  </td>
-  <td>No.</td>
-</tr>
-`;
-
-    activityTableEl.append(activityTableHeader);
-    */
-
-    if (myChart1) {
-        // If chart already exists, destroy it before creating a new one:
-        myChart1.destroy();
-    } 
-
-    myChart1 = new Chart(
-        activityChartEl,
-        config
-    );
 
     /*  Todo: you could link to GitHub's API docs to explain what each kind of event is.
         e.g.:
@@ -381,46 +490,8 @@ function displayRecentActivityData(myDataObj) {
         But they're all pretty self-explanatory, so.. not urgent!
     */
 
-    for (let i = 0; i < myLabels.length; i++) {
-        const idx = i % backgroundColours.length;
-        const activityTableRowEl = document.createElement('tr');
-        activityTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};">${myLabels[i]}</td><td>${myData[i]}</td>`;
 
-        activityTableRowEl.addEventListener('mouseenter', () => {
-            chartSetSingleActiveElement(myChart1, i);
-        });
-        activityTableRowEl.addEventListener('mouseleave', () => {
-            chartSetNoActiveElements(myChart1);
-        });
 
-        activityTableEl.append(activityTableRowEl);
-    }
-
-    activityDetailsSummaryEl.append(activitySectionHeadingEl);
-
-    activityDetailsEl.append(activityDetailsSummaryEl);
-
-    activityChartContainerEl.append(activityChartEl);
-
-    activityLegendContainer.append(activityLegendHeading);
-    activityLegendContainer.append(activityTableEl);
-
-    activityDetailsContainer.append(activityChartContainerEl);
-    activityDetailsContainer.append(activityLegendContainer);
-
-    activityDetailsEl.append(activityDetailsContainer);
-
-    activitySectionEl.append(activityDetailsEl);
-
-    // Todo: optimisation: this might be a slow/expensive way of doing this!
-    activityChartEl.addEventListener('mousemove', (event) => {
-        highlightLegendOnChartHover(myChart1, event, activityTableEl);
-    });
-
-    // Add a mouseleave event to remove the legend highlight class (It can get stuck!)
-    activityChartEl.addEventListener('mouseleave', () => {
-        removeAllLegendHighlights(activityTableEl);
-    });
 
 } // End of function displayRecentActivityData
 
@@ -481,117 +552,8 @@ function displayRecentReposData(myDataObj) {
     }
 
 
-    const data = {
-        labels: myLabels,
-        datasets: [
-            {
-                data: myData,
-                backgroundColor: backgroundColours,
-                hoverBorderWidth: 2,
-                hoverBorderColor: 'rgb(30, 30, 30)',
-            },
-        ]
-    };
+    displayChartAndLegend(myLabels, myData, reposChart, reposSectionEl, 'repos');
 
-    const config = {
-        type: 'pie',
-        data: data,
-        options: {
-            transitions: {
-                active: {
-                    animation: {
-                        duration: 0,
-                    },
-                },
-            },
-            responsive: false,
-            //events: [],
-            plugins: {
-                legend: {
-                    display: false,
-                    /* labels: {
-                        font: {
-                            size: 16,
-                        },
-                    }, */
-                    position: 'right',
-                },
-            },
-        },
-    };
-
-    const reposSectionHeadingEl = document.createElement('h2');
-    reposSectionHeadingEl.innerText = 'Most popular repos';
-
-    const reposChartContainerEl = document.createElement('div');
-    reposChartContainerEl.classList.add('chart-container');
-    const reposChartEl = document.createElement('canvas');
-
-    const reposDetailsEl = document.createElement('details');
-    reposDetailsEl.setAttribute('open', '');
-    const reposDetailsSummaryEl = document.createElement('summary');
-
-    const reposDetailsContainer = document.createElement('div');
-    reposDetailsContainer.classList.add('row');
-
-    const reposLegendContainer = document.createElement('div');
-    reposLegendContainer.classList.add('legend-container');
-
-    const reposLegendHeading = document.createElement('h3');
-    reposLegendHeading.innerHTML = 'Repos most interacted with recently:';
-
-    const reposTableEl = document.createElement('table');
-
-    if (myChart2) {
-        myChart2.destroy();
-    } 
-
-    myChart2 = new Chart(
-        reposChartEl,
-        config
-    );
-
-    for (let i = 0; i < myLabels.length; i++) {
-        // I spent *way* too much time trying to work this out. You just need the remainder!
-        const idx = i % backgroundColours.length;
-        //html += `<li style="border-left: 2rem solid ${backgroundColours[idx]}; padding-left: 0.5rem;"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>: ${myData[i]}</li>`;
-
-        const reposTableRowEl = document.createElement('tr');
-        reposTableRowEl.innerHTML = `<td style="border-left: 2rem solid ${backgroundColours[idx]};"><a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a></td><td>${myData[i]}</td>`;
-
-        reposTableRowEl.addEventListener('mouseenter', () => {
-            chartSetSingleActiveElement(myChart2, i);
-        });
-        reposTableRowEl.addEventListener('mouseleave', () => {
-            chartSetNoActiveElements(myChart2);
-        });
-
-        reposTableEl.append(reposTableRowEl);
-    }
-
-    reposDetailsSummaryEl.append(reposSectionHeadingEl);
-
-    reposDetailsEl.append(reposDetailsSummaryEl);
-
-    reposChartContainerEl.append(reposChartEl);
-
-    reposLegendContainer.append(reposLegendHeading);
-    reposLegendContainer.append(reposTableEl);
-
-    reposDetailsContainer.append(reposChartContainerEl);
-    reposDetailsContainer.append(reposLegendContainer);
-
-    reposDetailsEl.append(reposDetailsContainer);
-
-    reposSectionEl.append(reposDetailsEl);
-
-    reposChartEl.addEventListener('mousemove', (event) => {
-        highlightLegendOnChartHover(myChart2, event, reposTableEl);
-    });
-
-    reposChartEl.addEventListener('mouseleave', () => {
-        removeAllLegendHighlights(reposTableEl);
-    });
 
 } // End of function displayRecentReposData
 
@@ -661,129 +623,9 @@ function displayRecentCollaboratorsData(myDataObj, username) {
     }
 
 
+    // Call function to draw chart etc.
+    displayChartAndLegend(myLabels, myData, collaboratorsChart, collaboratorsSectionEl, 'collaborators', username);
 
-    const data = {
-        labels: myLabels,
-        datasets: [
-            {
-                data: myData,
-                backgroundColor: backgroundColours,
-                hoverBorderWidth: 2,
-                hoverBorderColor: 'rgb(30, 30, 30)',
-            },
-        ]
-    };
-
-    const config = {
-        type: 'pie',
-        data: data,
-        options: {
-            transitions: {
-                active: {
-                    animation: {
-                        duration: 0,
-                    },
-                },
-            },
-            responsive: false,
-            //events: [],
-            plugins: {
-                legend: {
-                    display: false,
-                    labels: {
-                        font: {
-                            size: 16,
-                        },
-                    },
-                    position: 'right',
-                },
-            },
-        },
-    };
-
-    const collaboratorsSectionHeadingEl = document.createElement('h2');
-    collaboratorsSectionHeadingEl.innerText = 'Top collaborators';
-
-    const collaboratorsChartContainerEl = document.createElement('div');
-    collaboratorsChartContainerEl.classList.add('chart-container');
-    const collaboratorsChartEl = document.createElement('canvas');
-
-    const collaboratorsDetailsEl = document.createElement('details');
-    collaboratorsDetailsEl.setAttribute('open', '');
-    const collaboratorsDetailsSummaryEl = document.createElement('summary');
-
-    const collaboratorsDetailsContainer = document.createElement('div');
-    collaboratorsDetailsContainer.classList.add('row');
-
-    const collaboratorsLegendContainer = document.createElement('div');
-    collaboratorsLegendContainer.classList.add('legend-container');
-
-    const collaboratorsLegendHeading = document.createElement('h3');
-    collaboratorsLegendHeading.innerHTML = 'Accounts most interacted with recently:';
-
-    const collaboratorsTableEl = document.createElement('table');
-
-    if (myChart3) {
-        // If chart already exists, destroy it before creating a new one:
-        myChart3.destroy();
-    }
-
-    myChart3 = new Chart(
-        collaboratorsChartEl,
-        config
-    );
-
-    for (let i = 0; i < myLabels.length; i++) {
-        const idx = i % backgroundColours.length;
-        const collaboratorsTableRowEl = document.createElement('tr');
-
-        let html = `
-<td style="border-left: 2rem solid ${backgroundColours[idx]};">
-    <a href="https://github.com/${myLabels[i]}">${myLabels[i]}</a>
-</td>
-<td>
-    ${myData[i]}
-`;
-
-        if (myLabels[i] === username) { html += ` <em><!-- &larr;  -->(this is the user you searched for)</em>`; }
-        html += `</td>`;
-
-        collaboratorsTableRowEl.innerHTML = html;
-
-        collaboratorsTableRowEl.addEventListener('mouseenter', () => {
-            chartSetSingleActiveElement(myChart3, i);
-        });
-        collaboratorsTableRowEl.addEventListener('mouseleave', () => {
-            chartSetNoActiveElements(myChart3);
-        });
-
-        collaboratorsTableEl.append(collaboratorsTableRowEl);
-
-    }
-
-    collaboratorsDetailsSummaryEl.append(collaboratorsSectionHeadingEl);
-
-    collaboratorsDetailsEl.append(collaboratorsDetailsSummaryEl);
-
-    collaboratorsChartContainerEl.append(collaboratorsChartEl);
-
-    collaboratorsLegendContainer.append(collaboratorsLegendHeading);
-    collaboratorsLegendContainer.append(collaboratorsTableEl);
-
-    collaboratorsDetailsContainer.append(collaboratorsChartContainerEl);
-    collaboratorsDetailsContainer.append(collaboratorsLegendContainer);
-
-    collaboratorsDetailsEl.append(collaboratorsDetailsContainer);
-
-    collaboratorsSectionEl.append(collaboratorsDetailsEl);
-
-    collaboratorsChartEl.addEventListener('mousemove', (event) => {
-        highlightLegendOnChartHover(myChart3, event, collaboratorsTableEl);
-    });
-
-    collaboratorsChartEl.addEventListener('mouseleave', () => {
-        removeAllLegendHighlights(collaboratorsTableEl);
-    });
 
 } // End of function displayRecentCollaboratorsData
 
@@ -955,9 +797,9 @@ function handleEventsFetch(username, response) {
 
 
 
-let myChart1 = undefined;
-let myChart2 = undefined;
-let myChart3 = undefined;
+let activityChart = undefined;
+let reposChart = undefined;
+let collaboratorsChart = undefined;
 
 
 const mainEl = document.querySelector('main');
