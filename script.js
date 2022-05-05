@@ -238,13 +238,15 @@ function displayRecentActivityData(myDataObj) {
                 active: {
                     animation: {
                         // Todo: fix: this seems to work the first time, then gets ignored?
+                        // Note: commenting the events: [] line below and then mouseover-ing
+                        // the chart seems to fix this?
                         duration: 0,
                     },
                 },
             },
             responsive: false,
             // Get rid of mouse hover stuff:
-            events: [],
+            //events: [],
             //maintainAspectRatio: false,
             plugins: {
                 legend: {
@@ -458,7 +460,7 @@ function displayRecentReposData(myDataObj) {
                 },
             },
             responsive: false,
-            events: [],
+            //events: [],
             plugins: {
                 legend: {
                     display: false,
@@ -631,7 +633,7 @@ function displayRecentCollaboratorsData(myDataObj, username) {
                 },
             },
             responsive: false,
-            events: [],
+            //events: [],
             plugins: {
                 legend: {
                     display: false,
